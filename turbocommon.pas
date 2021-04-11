@@ -371,6 +371,7 @@ begin
     7  : Result:= 'SMALLINT'; // further processed below
     13 : Result:= 'TIME';
     35 : Result:= 'TIMESTAMP';
+    23 : Result:= 'BOOLEAN';
     VarCharType : Result:= 'VARCHAR';
   else
     Result:= 'Unknown Type';

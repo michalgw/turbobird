@@ -919,7 +919,7 @@ begin
     'SMALLINT,INTEGER,BIGINT,VARCHAR,'+
     'FLOAT,"DOUBLE PRECISION",DECIMAL,NUMERIC,'+
     'CHAR,DATE,TIME,' +
-    'TIMESTAMP,CSTRING,D_FLOAT,QUAD,BLOB';
+    'TIMESTAMP,CSTRING,D_FLOAT,QUAD,BLOB,BOOLEAN';
 end;
 
 procedure TdmSysTables.GetDomainTypes(dbIndex: Integer; List: TStrings);
