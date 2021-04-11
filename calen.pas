@@ -36,6 +36,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TfmCalen }
 
 procedure TfmCalen.BitBtn1Click(Sender: TObject);
@@ -59,9 +61,6 @@ procedure TfmCalen.bbOkClick(Sender: TObject);
 begin
   DateTimeValue:= StrToTime(edTime.Text) + Trunc(Calendar1.DateTime);
 end;
-
-initialization
-  {$I calen.lrs}
 
 end.
 

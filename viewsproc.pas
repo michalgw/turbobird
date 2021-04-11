@@ -36,6 +36,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TfmViewSProc }
 
 procedure TfmViewSProc.FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -76,9 +78,6 @@ begin
   Close;
   Parent.Free;
 end;
-
-initialization
-  {$I viewsproc.lrs}
 
 end.
 

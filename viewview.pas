@@ -34,6 +34,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TfmViewView }
 
 procedure TfmViewView.FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -74,9 +76,6 @@ begin
   Close;
   Parent.Free;
 end;
-
-initialization
-  {$I viewview.lrs}
 
 end.
 

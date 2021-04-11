@@ -41,6 +41,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TfmNewGen }
 
 uses main, SysTables;
@@ -129,9 +131,6 @@ begin
 
   cxTrigger.Checked:= False;
 end;
-
-initialization
-  {$I newgen.lrs}
 
 end.
 

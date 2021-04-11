@@ -41,6 +41,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 uses Reg;
 
 { TfmCreateDB }
@@ -80,9 +82,6 @@ begin
   ModalResult:= fmReg.ShowModal;
   ModalResult:= mrOK;
 end;
-
-initialization
-  {$I createdb.lrs}
 
 end.
 

@@ -36,6 +36,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TfmCreateTrigger }
 
 procedure TfmCreateTrigger.BitBtn1Click(Sender: TObject);
@@ -45,9 +47,6 @@ begin
   else
     ModalResult:= mrOK;
 end;
-
-initialization
-  {$I createtrigger.lrs}
 
 end.
 

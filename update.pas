@@ -73,6 +73,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 uses Main;
 { TfmUpdate }
 
@@ -298,9 +300,6 @@ begin
   Minor:= aMinor;
   ReleaseVersion:= aReleaseVersion;
 end;
-
-initialization
-  {$I update.lrs}
 
 end.
 

@@ -56,6 +56,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TfmNewTable }
 
 uses SysTables, Main;
@@ -411,9 +413,6 @@ begin
     StringGrid1.Cells[5, StringGrid1.Row]:= ''; // Remove default value
   end;
 end;
-
-initialization
-  {$I newtable.lrs}
 
 end.
 

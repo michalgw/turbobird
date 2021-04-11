@@ -45,6 +45,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TfmAbout }
 
 uses Main, Update;
@@ -82,9 +84,6 @@ procedure TfmAbout.BitBtn1Click(Sender: TObject);
 begin
   Close;
 end;
-
-initialization
-  {$I about.lrs}
 
 end.
 

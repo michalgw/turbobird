@@ -36,6 +36,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TfmEnterPass }
 
 procedure TfmEnterPass.FormActivate(Sender: TObject);
@@ -49,9 +51,6 @@ begin
   cbRole.ItemIndex:= -1;
 end;
 
-
-initialization
-  {$I enterpass.lrs}
 
 end.
 

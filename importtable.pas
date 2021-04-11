@@ -67,6 +67,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TfmImportTable }
 
 uses main, SysTables, EnterPass, Reg;
@@ -369,9 +371,6 @@ begin
   FDestTable:=DestinationTableName;
   Caption:='Import '+FDestTable;
 end;
-
-initialization
-  {$I ImportTable.lrs}
 
 end.
 

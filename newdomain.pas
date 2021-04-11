@@ -35,6 +35,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TfmNewDomain }
 
 procedure TfmNewDomain.Init;
@@ -44,9 +46,6 @@ begin
   edDefault.Clear;
   seSize.Value:= 0;
 end;
-
-initialization
-  {$I newdomain.lrs}
 
 end.
 

@@ -36,6 +36,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TfmCreateUser }
 
 uses SysTables;
@@ -51,9 +53,6 @@ var
 begin
   cbRoles.Items.CommaText:= dmSysTables.GetDBObjectNames(dbIndex, otRoles, Count);
 end;
-
-initialization
-  {$I createuser.lrs}
 
 end.
 

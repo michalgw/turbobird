@@ -244,7 +244,7 @@ var
 
 implementation
 
-
+{$R *.lfm}
 
 uses main, SQLHistory;
 
@@ -2181,9 +2181,6 @@ begin
   tbRollback.Enabled:= True;
   tbRollbackRetaining.Enabled:= True;
 end;
-
-initialization
-  {$I querywindow.lrs}
 
 end.
 

@@ -286,6 +286,7 @@ var
 
 implementation
 
+{$R *.lfm}
 
 { TfmMain }
 
@@ -4287,9 +4288,6 @@ var
 begin
   Result:= dmSysTables.GetDBObjectNames(dbIndex, otTables, Count);
 end;
-
-initialization
-  {$I main.lrs}
 
 end.
 

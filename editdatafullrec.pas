@@ -38,6 +38,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 uses Calen;
 
 procedure TfmEditDataFullRec.FormClose(Sender: TObject;
@@ -191,9 +193,6 @@ begin
   end;
   Height:= ATop + 10;
 end;
-
-initialization
-  {$I editdatafullrec.lrs}
 
 end.
 

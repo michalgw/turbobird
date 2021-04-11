@@ -36,6 +36,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TfmUDFInfo }
 
 procedure TfmUDFInfo.FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -63,9 +65,6 @@ begin
   Close;
   Parent.Free;
 end;
-
-initialization
-  {$I udfinfo.lrs}
 
 end.
 

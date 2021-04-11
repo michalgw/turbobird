@@ -32,6 +32,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TfmChangePass }
 
 procedure TfmChangePass.bbCreateClick(Sender: TObject);
@@ -44,9 +46,6 @@ begin
   else
     ModalResult:= mrOK;
 end;
-
-initialization
-  {$I changepass.lrs}
 
 end.
 

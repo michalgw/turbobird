@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CONFIG>
   <ProjectOptions>
-    <Version Value="9"/>
+    <Version Value="12"/>
     <General>
       <Flags>
         <LRSInOutputDirectory Value="False"/>
+        <CompatibilityMode Value="True"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
-      <MainUnit Value="0"/>
       <Title Value="TurboBird"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
@@ -64,16 +64,21 @@
     </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
-      <IgnoreBinaries Value="False"/>
-      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
-      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
     </PublishOptions>
     <RunParams>
       <local>
-        <FormatVersion Value="1"/>
         <CommandLineParams Value="--debug-log=log.txt"/>
-        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T 'Lazarus Run Output' -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+        <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T &apos;Lazarus Run Output&apos; -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
       </local>
+      <FormatVersion Value="2"/>
+      <Modes Count="1">
+        <Mode0 Name="default">
+          <local>
+            <CommandLineParams Value="--debug-log=log.txt"/>
+            <LaunchingApplication PathPlusParams="/usr/X11R6/bin/xterm -T &apos;Lazarus Run Output&apos; -e $(LazarusDir)/tools/runwait.sh $(TargetCmdLine)"/>
+          </local>
+        </Mode0>
+      </Modes>
     </RunParams>
     <RequiredPackages Count="6">
       <Item1>
@@ -108,7 +113,6 @@
         <ComponentName Value="fmMain"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
-        <UnitName Value="main"/>
       </Unit1>
       <Unit2>
         <Filename Value="createdb.pas"/>
@@ -116,6 +120,7 @@
         <ComponentName Value="fmCreateDB"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="CreateDb"/>
       </Unit2>
       <Unit3>
         <Filename Value="reg.pas"/>
@@ -123,6 +128,7 @@
         <ComponentName Value="fmReg"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="Reg"/>
       </Unit3>
       <Unit4>
         <Filename Value="querywindow.pas"/>
@@ -138,6 +144,7 @@
         <ComponentName Value="fmViewView"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ViewView"/>
       </Unit5>
       <Unit6>
         <Filename Value="viewtrigger.pas"/>
@@ -145,6 +152,7 @@
         <ComponentName Value="fmViewTrigger"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ViewTrigger"/>
       </Unit6>
       <Unit7>
         <Filename Value="viewsproc.pas"/>
@@ -152,6 +160,7 @@
         <ComponentName Value="fmViewSProc"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ViewSProc"/>
       </Unit7>
       <Unit8>
         <Filename Value="viewgen.pas"/>
@@ -159,6 +168,7 @@
         <ComponentName Value="fmViewGen"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ViewGen"/>
       </Unit8>
       <Unit9>
         <Filename Value="newtable.pas"/>
@@ -166,6 +176,7 @@
         <ComponentName Value="fmNewTable"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="NewTable"/>
       </Unit9>
       <Unit10>
         <Filename Value="newgen.pas"/>
@@ -173,6 +184,7 @@
         <ComponentName Value="fmNewGen"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="NewGen"/>
       </Unit10>
       <Unit11>
         <Filename Value="enterpass.pas"/>
@@ -180,6 +192,7 @@
         <ComponentName Value="fmEnterPass"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="EnterPass"/>
       </Unit11>
       <Unit12>
         <Filename Value="about.pas"/>
@@ -187,6 +200,7 @@
         <ComponentName Value="fmAbout"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="About"/>
       </Unit12>
       <Unit13>
         <Filename Value="createtrigger.pas"/>
@@ -194,6 +208,7 @@
         <ComponentName Value="fmCreateTrigger"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="CreateTrigger"/>
       </Unit13>
       <Unit14>
         <Filename Value="edittable.pas"/>
@@ -201,6 +216,7 @@
         <ComponentName Value="fmEditTable"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="EditTable"/>
       </Unit14>
       <Unit15>
         <Filename Value="callproc.pas"/>
@@ -208,6 +224,7 @@
         <ComponentName Value="fmCallProc"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="CallProc"/>
       </Unit15>
       <Unit16>
         <Filename Value="editdatafullrec.pas"/>
@@ -215,6 +232,7 @@
         <ComponentName Value="fmEditDataFullRec"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="EditDataFullRec"/>
       </Unit16>
       <Unit17>
         <Filename Value="udfinfo.pas"/>
@@ -222,6 +240,7 @@
         <ComponentName Value="fmUDFInfo"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="UDFInfo"/>
       </Unit17>
       <Unit18>
         <Filename Value="viewdomain.pas"/>
@@ -229,6 +248,7 @@
         <ComponentName Value="fmViewDomain"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ViewDomain"/>
       </Unit18>
       <Unit19>
         <Filename Value="newdomain.pas"/>
@@ -236,6 +256,7 @@
         <ComponentName Value="fmNewDomain"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="NewDomain"/>
       </Unit19>
       <Unit20>
         <Filename Value="systables.pas"/>
@@ -251,6 +272,7 @@
         <ComponentName Value="fmNewConstraint"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="NewConstraint"/>
       </Unit21>
       <Unit22>
         <Filename Value="neweditfield.pas"/>
@@ -258,6 +280,7 @@
         <ComponentName Value="fmNewEditField"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="NewEditField"/>
       </Unit22>
       <Unit23>
         <Filename Value="calen.pas"/>
@@ -265,10 +288,12 @@
         <ComponentName Value="fmCalen"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="Calen"/>
       </Unit23>
       <Unit24>
         <Filename Value="scriptdb.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="Scriptdb"/>
       </Unit24>
       <Unit25>
         <Filename Value="userpermissions.pas"/>
@@ -276,6 +301,7 @@
         <ComponentName Value="fmUserPermissions"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="UserPermissions"/>
       </Unit25>
       <Unit26>
         <Filename Value="tablemanage.pas"/>
@@ -283,6 +309,7 @@
         <ComponentName Value="fmTableManage"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="TableManage"/>
       </Unit26>
       <Unit27>
         <Filename Value="backuprestore.pas"/>
@@ -290,6 +317,7 @@
         <ComponentName Value="fmBackupRestore"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="BackupRestore"/>
       </Unit27>
       <Unit28>
         <Filename Value="createuser.pas"/>
@@ -297,6 +325,7 @@
         <ComponentName Value="fmCreateUser"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="CreateUser"/>
       </Unit28>
       <Unit29>
         <Filename Value="changepass.pas"/>
@@ -304,6 +333,7 @@
         <ComponentName Value="fmChangePass"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ChangePass"/>
       </Unit29>
       <Unit30>
         <Filename Value="permissionmanage.pas"/>
@@ -311,6 +341,7 @@
         <ComponentName Value="fmPermissionManage"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="PermissionManage"/>
       </Unit30>
       <Unit31>
         <Filename Value="sqlhistory.pas"/>
@@ -318,6 +349,7 @@
         <ComponentName Value="fmSQLHistory"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="SQLHistory"/>
       </Unit31>
       <Unit32>
         <Filename Value="copytable.pas"/>
@@ -325,6 +357,7 @@
         <ComponentName Value="fmCopyTable"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="CopyTable"/>
       </Unit32>
       <Unit33>
         <Filename Value="dbinfo.pas"/>
@@ -332,6 +365,7 @@
         <ComponentName Value="fmDBInfo"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="dbInfo"/>
       </Unit33>
       <Unit34>
         <Filename Value="comparison.pas"/>
@@ -339,6 +373,7 @@
         <ComponentName Value="fmComparison"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="Comparison"/>
       </Unit34>
       <Unit35>
         <Filename Value="procmod.pas"/>
@@ -353,6 +388,7 @@
         <ComponentName Value="fmUpdate"/>
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
+        <UnitName Value="Update"/>
       </Unit36>
       <Unit37>
         <Filename Value="topologicalsort.pas"/>
@@ -361,6 +397,7 @@
       <Unit38>
         <Filename Value="unitfirebirdservices.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="UnitFirebirdServices"/>
       </Unit38>
       <Unit39>
         <Filename Value="turbocommon.inc"/>
@@ -388,6 +425,7 @@
       <Unit44>
         <Filename Value="csvdocument.pas"/>
         <IsPartOfProject Value="True"/>
+        <UnitName Value="CsvDocument"/>
       </Unit44>
     </Units>
   </ProjectOptions>

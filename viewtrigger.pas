@@ -44,6 +44,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TfmViewTrigger }
 
 procedure TfmViewTrigger.FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -84,9 +86,6 @@ begin
   Close;
   Parent.Free;
 end;
-
-initialization
-  {$I viewtrigger.lrs}
 
 end.
 

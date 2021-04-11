@@ -32,6 +32,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TfmViewGen }
 
 procedure TfmViewGen.FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -59,9 +61,6 @@ begin
   Close;
   Parent.Free
 end;
-
-initialization
-  {$I viewgen.lrs}
 
 end.
 

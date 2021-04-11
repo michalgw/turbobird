@@ -71,6 +71,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TfmReg }
 
 uses main;
@@ -301,9 +303,6 @@ begin
       end;
   until Done;
 end;
-
-initialization
-  {$I reg.lrs}
 
 end.
 

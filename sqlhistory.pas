@@ -45,6 +45,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TfmSQLHistory }
 
 uses Main, QueryWindow;
@@ -147,8 +149,5 @@ begin
   Datasource1.DataSet:= fmMain.mdsHistory;
   fmMain.mdsHistory.Last;
 end;
-
-initialization
-  {$I sqlhistory.lrs}
 
 end.

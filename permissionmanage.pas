@@ -121,6 +121,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TfmPermissionManage }
 
 uses SysTables, main;
@@ -593,9 +595,6 @@ begin
   end;
   cbRolesUser.Items.CommaText:= dmSysTables.GetDBObjectNames(dbIndex, otUsers, Count);
 end;
-
-initialization
-  {$I permissionmanage.lrs}
 
 end.
 

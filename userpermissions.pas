@@ -31,6 +31,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TfmUserPermissions }
 
 procedure TfmUserPermissions.FormClose(Sender: TObject;
@@ -59,9 +61,6 @@ begin
   Close;
   Parent.Free;
 end;
-
-initialization
-  {$I userpermissions.lrs}
 
 end.
 

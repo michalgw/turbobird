@@ -45,6 +45,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 uses main;
 
 { TfmNewConstraint }
@@ -95,9 +97,6 @@ begin
 
   fmMain.Show;
 end;
-
-initialization
-  {$I newconstraint.lrs}
 
 end.
 

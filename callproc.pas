@@ -29,6 +29,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TfmCallProc }
 
 
@@ -47,9 +49,6 @@ begin
   StringGrid1.Row:= 1;
 end;
 
-
-initialization
-  {$I callproc.lrs}
 
 end.
 

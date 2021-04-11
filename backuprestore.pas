@@ -61,6 +61,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TfmBackupRestore }
 
 uses UnitFirebirdServices;
@@ -303,9 +305,6 @@ begin
   if SaveDialog1.Execute then
     edTargetDatabase.Text:= SaveDialog1.FileName;
 end;
-
-initialization
-  {$I backuprestore.lrs}
 
 end.
 

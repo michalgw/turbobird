@@ -41,6 +41,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TfmEditTable }
 
 procedure TfmEditTable.FormClose(Sender: TObject; var CloseAction: TCloseAction);
@@ -129,9 +131,6 @@ begin
   if not(bbSave.Visible) then
     ShowMessage('Primary key is not found for this table. It can not be edited.');
 end;
-
-initialization
-  {$I edittable.lrs}
 
 end.
 

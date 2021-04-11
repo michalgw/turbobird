@@ -108,6 +108,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TfmTableManage }
 
 uses NewEditField, Main, QueryWindow, SysTables, NewConstraint, PermissionManage;
@@ -618,9 +620,6 @@ begin
     UsersList.Free;
   end;
 end;
-
-initialization
-  {$I tablemanage.lrs}
 
 end.
 

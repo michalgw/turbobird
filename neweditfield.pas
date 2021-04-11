@@ -71,6 +71,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TfmNewEditField }
 
 uses Main, SysTables;
@@ -303,9 +305,6 @@ begin
     Caption:= 'Add new field in : ' + TableName;
   end;
 end;
-
-initialization
-  {$I neweditfield.lrs}
 
 end.
 

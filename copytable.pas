@@ -46,6 +46,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 { TfmCopyTable }
 
 uses main, SysTables, EnterPass, Reg;
@@ -204,9 +206,6 @@ begin
   SynSQLSyn1.TableNames.Text:= cbSourceTable.Text;
   cbSourceTableChange(nil);
 end;
-
-initialization
-  {$I copytable.lrs}
 
 end.
 

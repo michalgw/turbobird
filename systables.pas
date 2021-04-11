@@ -131,6 +131,8 @@ var
 
 implementation
 
+{$R *.lfm}
+
 uses Main,topologicalsort;
 
 function DecToBin(Dec, Len: Byte): string;
@@ -1242,9 +1244,6 @@ begin
   end;
   sqQuery.Close;
 end;
-
-initialization
-  {$I systables.lrs}
 
 end.
 
