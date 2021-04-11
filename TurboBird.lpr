@@ -105,12 +105,6 @@ begin
   Application.ProcessMessages;
   SAbout.Update;
   Application.CreateForm(TfmMain, fmMain);
-  fmMain.Version:= Format('%d.%d.%d', [Major, Minor, Release]);
-  fmMain.StatusBar1.Panels[1].Text:= 'Version: ' + fmMain.Version;
-  fmMain.VersionDate:= VersionDate;
-  fmMain.Major:= Major;
-  fmMain.Minor:= Minor;
-  fmMain.ReleaseVersion:= Release;
   Application.CreateForm(TfmCreateDB, fmCreateDB);
   Application.CreateForm(TfmReg, fmReg);
   Application.CreateForm(TfmNewGen, fmNewGen);
@@ -119,7 +113,6 @@ begin
   Application.CreateForm(TfmEditTable, fmEditTable);
   Application.CreateForm(TfmCallProc, fmCallProc);
   Application.CreateForm(TfmEditDataFullRec, fmEditDataFullRec);
-  Application.CreateForm(TfmNewDomain, fmNewDomain);
   Application.CreateForm(TdmSysTables, dmSysTables);
   Application.CreateForm(TfmNewConstraint, fmNewConstraint);
   Application.CreateForm(TfmCalen, fmCalen);
@@ -128,6 +121,12 @@ begin
   Application.CreateForm(TfmChangePass, fmChangePass);
   Application.CreateForm(TfmSQLHistory, fmSQLHistory);
   Application.CreateForm(TfmCopyTable, fmCopyTable);
+  fmMain.Version:= Format('%d.%d.%d', [Major, Minor, Release]);
+  fmMain.StatusBar1.Panels[1].Text:= 'Version: ' + fmMain.Version;
+  fmMain.VersionDate:= VersionDate;
+  fmMain.Major:= Major;
+  fmMain.Minor:= Minor;
+  fmMain.ReleaseVersion:= Release;
   SAbout.Free;
   InitialiseIBase60;
   Application.Run;

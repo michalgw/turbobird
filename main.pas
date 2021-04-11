@@ -1285,25 +1285,45 @@ var
 begin
   SelNode:= tvMain.Selected;
   if (SelNode <> nil) and (SelNode.Parent <> nil) then
-  if fmNewDomain.ShowModal = mrOk then
-  with QWindow do
   begin
-    QWindow:= ShowQueryWindow(PtrInt(SelNode.Parent.Data), 'Create new domain');
-    meQuery.Lines.Clear;
-    Line:= 'CREATE DOMAIN ' + fmNewDomain.edName.Text + ' AS ' + fmNewDomain.cbType.Text;
-    if Pos('char', LowerCase(fmNewDomain.cbType.Text)) > 0 then
-      Line:= Line + '(' + IntToStr(fmNewDomain.seSize.Value) + ')';
-    meQuery.Lines.Add(Line);
-
-    if Trim(fmNewDomain.edDefault.Text) <> '' then
+    fmNewDomain := TfmNewDomain.Create(Application);
+    fmNewDomain.Init(PtrInt(SelNode.Parent.Data));
+    if fmNewDomain.ShowModal = mrOk then
+    with QWindow do
     begin
-      if (Pos('char', LowerCase(fmNewDomain.cbType.Text)) > 0) or
-        (LowerCase(fmNewDomain.cbType.Text)='cstring') then
-        meQuery.Lines.Add('DEFAULT ' + QuotedStr(fmNewDomain.edDefault.Text))
-      else
-        meQuery.Lines.Add('DEFAULT ' + fmNewDomain.edDefault.Text);
+      QWindow:= ShowQueryWindow(PtrInt(SelNode.Parent.Data), 'Create new domain');
+      meQuery.Lines.Clear;
+      Line:= 'CREATE DOMAIN ' + fmNewDomain.edName.Text + ' AS ' + fmNewDomain.cbType.Text;
+      if Pos('char', LowerCase(fmNewDomain.cbType.Text)) > 0 then
+      begin
+        Line:= Line + '(' + IntToStr(fmNewDomain.seSize.Value) + ')';
+        if fmNewDomain.cbCharset.Text <> '' then
+          Line := Line + ' CHARACTER SET ' + fmNewDomain.cbCharset.Text;
+      end
+      else if (fmNewDomain.cbType.Text = 'DECIMAL') or (fmNewDomain.cbType.Text = 'NUMERIC') then
+        Line := Line + '(' + IntToStr(fmNewDomain.seSize.Value) + ',' + IntToStr(fmNewDomain.seScale.Value) + ')';
+      meQuery.Lines.Add(Line);
+
+      if Trim(fmNewDomain.edDefault.Text) <> '' then
+      begin
+        if (Pos('char', LowerCase(fmNewDomain.cbType.Text)) > 0) or
+          (LowerCase(fmNewDomain.cbType.Text)='cstring') then
+          meQuery.Lines.Add('DEFAULT ' + QuotedStr(fmNewDomain.edDefault.Text))
+        else
+          meQuery.Lines.Add('DEFAULT ' + fmNewDomain.edDefault.Text);
+      end;
+
+      if fmNewDomain.cbNotNull.Checked then
+        meQuery.Lines.Add('NOT NULL');
+
+      if fmNewDomain.edCheck.Text <> '' then
+        meQuery.Lines.Add('CHECK (' + fmNewDomain.edCheck.Text + ')');
+
+      if fmNewDomain.cbCollation.Text <> '' then
+        meQuery.Lines.Add('COLLATE ' + fmNewDomain.cbCollation.Text);
+      Show;
     end;
-    Show;
+    fmNewDomain.Free;
   end;
 end;
 

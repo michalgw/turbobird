@@ -1,61 +1,62 @@
 object fmNewDomain: TfmNewDomain
   Left = 493
-  Height = 179
+  Height = 342
   Top = 256
   Width = 373
   ActiveControl = edName
   BorderIcons = [biSystemMenu]
   BorderStyle = bsSingle
   Caption = 'Create New domain'
-  ClientHeight = 179
+  ClientHeight = 342
   ClientWidth = 373
+  OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '1.2.6.0'
+  LCLVersion = '2.1.0.0'
   object Label1: TLabel
-    Left = 14
-    Height = 16
+    Left = 16
+    Height = 15
     Top = 8
-    Width = 121
+    Width = 102
     Caption = 'New Domain name'
     ParentColor = False
   end
   object Label2: TLabel
     Left = 16
-    Height = 16
+    Height = 15
     Top = 40
-    Width = 32
+    Width = 24
     Caption = 'Type'
     ParentColor = False
   end
   object Label3: TLabel
-    Left = 18
-    Height = 16
+    Left = 16
+    Height = 15
     Top = 72
-    Width = 27
+    Width = 20
     Caption = 'Size'
     ParentColor = False
   end
   object Label4: TLabel
-    Left = 18
-    Height = 16
-    Top = 104
-    Width = 87
+    Left = 16
+    Height = 15
+    Top = 136
+    Width = 69
     Caption = 'Default value'
     ParentColor = False
   end
   object edName: TEdit
     Left = 155
-    Height = 24
+    Height = 23
     Top = 8
     Width = 204
     TabOrder = 0
   end
   object cbType: TComboBox
     Left = 155
-    Height = 24
+    Height = 23
     Top = 40
     Width = 204
-    ItemHeight = 16
+    ItemHeight = 15
     Items.Strings = (
       'SMALLINT'
       'INTEGER'
@@ -71,20 +72,26 @@ object fmNewDomain: TfmNewDomain
       'INT64'
       'QUAD'
       'BLOB'
+      'BOOLEAN'
+      'DECIMAL'
+      'NUMERIC'
     )
+    OnEditingDone = cbTypeEditingDone
+    Style = csDropDownList
     TabOrder = 1
   end
   object seSize: TSpinEdit
     Left = 155
-    Height = 24
+    Height = 23
     Top = 72
     Width = 105
+    MaxValue = 99999999
     TabOrder = 2
   end
   object BitBtn1: TBitBtn
     Left = 172
     Height = 30
-    Top = 144
+    Top = 296
     Width = 88
     Caption = 'Script'
     Color = clForm
@@ -131,7 +138,7 @@ object fmNewDomain: TfmNewDomain
   object BitBtn2: TBitBtn
     Left = 271
     Height = 30
-    Top = 144
+    Top = 296
     Width = 88
     Cancel = True
     Caption = 'Cancel'
@@ -142,9 +149,94 @@ object fmNewDomain: TfmNewDomain
   end
   object edDefault: TEdit
     Left = 155
-    Height = 24
-    Top = 104
-    Width = 205
+    Height = 23
+    Top = 136
+    Width = 204
     TabOrder = 5
+  end
+  object Label5: TLabel
+    Left = 16
+    Height = 15
+    Top = 168
+    Width = 33
+    Caption = 'Check'
+    ParentColor = False
+  end
+  object edCheck: TEdit
+    Left = 155
+    Height = 23
+    Top = 168
+    Width = 204
+    TabOrder = 6
+  end
+  object Label6: TLabel
+    Left = 16
+    Height = 15
+    Top = 104
+    Width = 27
+    Caption = 'Scale'
+    ParentColor = False
+  end
+  object seScale: TSpinEdit
+    Left = 155
+    Height = 23
+    Top = 104
+    Width = 105
+    TabOrder = 7
+  end
+  object Label7: TLabel
+    Left = 16
+    Height = 15
+    Top = 200
+    Width = 52
+    Caption = 'Not NULL'
+    ParentColor = False
+  end
+  object cbNotNull: TCheckBox
+    Left = 155
+    Height = 19
+    Top = 200
+    Width = 72
+    Caption = 'Not NULL'
+    TabOrder = 8
+  end
+  object lblCharset: TLabel
+    Left = 16
+    Height = 15
+    Top = 228
+    Width = 40
+    Caption = 'Charset'
+    ParentColor = False
+  end
+  object lblCollation: TLabel
+    Left = 16
+    Height = 15
+    Top = 268
+    Width = 48
+    Caption = 'Collation'
+    ParentColor = False
+  end
+  object cbCollation: TComboBox
+    Left = 155
+    Height = 23
+    Hint = 'Collation of new field IF IT DIFFERS from database collation'
+    Top = 264
+    Width = 124
+    Enabled = False
+    ItemHeight = 15
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 9
+  end
+  object cbCharset: TComboBox
+    Left = 155
+    Height = 23
+    Hint = 'New field character setIF IT DIFFERS from database character set'
+    Top = 224
+    Width = 124
+    Enabled = False
+    ItemHeight = 15
+    OnEditingDone = cbCharsetEditingDone
+    TabOrder = 10
   end
 end
