@@ -3076,6 +3076,11 @@ object fmMain: TfmMain
       Caption = 'Domain Info'
       OnClick = lmViewDomainClick
     end
+    object lmDropDomain: TMenuItem
+      Tag = 8
+      Caption = 'Drop Domain'
+      OnClick = lmDropDomainClick
+    end
     object lmNewRole: TMenuItem
       Tag = 19
       Caption = 'Add New Role'

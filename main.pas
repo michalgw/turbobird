@@ -32,6 +32,7 @@ type
       editorFontDialog: TFontDialog;
       Image1: TImage;
     ImageList1: TImageList;
+    lmDropDomain: TMenuItem;
     mnOptions: TMenuItem;
     mnEditorFont: TMenuItem;
     toolbarImages: TImageList;
@@ -139,6 +140,7 @@ type
     procedure lmCreateDBClick(Sender: TObject);
     procedure lmDBInfoClick(Sender: TObject);
     procedure lmDisconnectClick(Sender: TObject);
+    procedure lmDropDomainClick(Sender: TObject);
     procedure lmEditFieldClick(Sender: TObject);
     procedure lmGetIncrementGenClick(Sender: TObject);
     procedure lmImportTableClick(Sender: TObject);
@@ -533,6 +535,26 @@ begin
       end;
     end;
   tvMain.Selected.Collapse(True);
+end;
+
+procedure TfmMain.lmDropDomainClick(Sender: TObject);
+var
+  SelNode: TTreeNode;
+  ADomainName: string;
+  QWindow: TfmQueryWindow;
+begin
+  SelNode:= tvMain.Selected;
+  if MessageDlg('Are you sure you want to delete ' + SelNode.Text + ' permanently', mtConfirmation,
+    [mbYes, mbNo], 0) = mrYes then
+  begin
+    // Move selection to tables above so object is not in use when deleting it
+    SelNode.Collapse(true);
+    SelNode.Parent.Selected:=true;
+    QWindow:= ShowQueryWindow(PtrInt(SelNode.Parent.Parent.Data), 'Drop Domain');
+    QWindow.meQuery.Lines.Clear;
+    QWindow.meQuery.Lines.Add('DROP DOMAIN ' + SelNode.Text + ';');
+    QWindow.Show;
+  end;
 end;
 
 procedure TfmMain.lmEditFieldClick(Sender: TObject);
