@@ -16,3 +16,7 @@ lib/
 #exclude executable output in windows
 *.exe
 TurboBird
+bin/
+
+#exclude project session files
+*.lps
