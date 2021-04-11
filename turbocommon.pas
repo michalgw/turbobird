@@ -247,7 +247,9 @@ type
     otExceptions,
     otUsers,
     otIndexes,
-    otConstraints
+    otConstraints,
+    otDbTriggers,
+    otDDLTriggers
     );
 
 const

@@ -3014,6 +3014,36 @@ begin
         end;
       end
       else
+        // Database Triggers
+      if Node.Text = 'Database Triggers' then
+      begin
+        TrigNode:= Node;
+        Objects.CommaText:= dmSysTables.GetDBObjectNames(DBIndex, otDbTriggers, Count);
+        Node.Text:= ANodeText + ' (' + IntToStr(Count) + ')';
+        TrigNode.DeleteChildren;
+        for i:= 0 to Objects.Count - 1 do
+        begin
+          Item:= tvMain.Items.AddChild(TrigNode, Objects[i]);
+          Item.ImageIndex:= 53;
+          Item.SelectedIndex:= 53;
+        end;
+      end
+      else
+        // DDL Triggers
+      if Node.Text = 'DDL Triggers' then
+      begin
+        TrigNode:= Node;
+        Objects.CommaText:= dmSysTables.GetDBObjectNames(DBIndex, otDDLTriggers, Count);
+        Node.Text:= ANodeText + ' (' + IntToStr(Count) + ')';
+        TrigNode.DeleteChildren;
+        for i:= 0 to Objects.Count - 1 do
+        begin
+          Item:= tvMain.Items.AddChild(TrigNode, Objects[i]);
+          Item.ImageIndex:= 55;
+          Item.SelectedIndex:= 55;
+        end;
+      end
+      else
         // Views
       if Node.Text = 'Views' then
       begin
@@ -4121,6 +4151,14 @@ begin
           CNode:= tvMain.Items.AddChild(MainNode, 'Triggers');
           CNode.ImageIndex:= 7;
           CNode.SelectedIndex:= 7;
+
+          CNode:= tvMain.Items.AddChild(MainNode, 'Database Triggers');
+          CNode.ImageIndex:= 52;
+          CNode.SelectedIndex:= 52;
+
+          CNode:= tvMain.Items.AddChild(MainNode, 'DDL Triggers');
+          CNode.ImageIndex:= 54;
+          CNode.SelectedIndex:= 54;
 
           CNode:= tvMain.Items.AddChild(MainNode, 'Views');
           CNode.ImageIndex:= 9;

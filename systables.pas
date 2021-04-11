@@ -189,7 +189,13 @@ begin
     sqQuery.SQL.Text:= 'select RDB$GENERATOR_Name from RDB$GENERATORS where RDB$SYSTEM_FLAG = 0 order by rdb$generator_Name'
   else
   if ObjectType = otTriggers then // Triggers
-    sqQuery.SQL.Text:= 'SELECT rdb$Trigger_Name FROM RDB$TRIGGERS WHERE RDB$SYSTEM_FLAG=0 order by rdb$Trigger_Name'
+    sqQuery.SQL.Text:= 'SELECT rdb$Trigger_Name FROM RDB$TRIGGERS WHERE RDB$SYSTEM_FLAG=0 and RDB$TRIGGER_TYPE<=114 order by rdb$Trigger_Name'
+  else
+  if ObjectType = otDbTriggers then // Database Triggers
+    sqQuery.SQL.Text:= 'SELECT rdb$Trigger_Name FROM RDB$TRIGGERS WHERE RDB$SYSTEM_FLAG=0 and RDB$TRIGGER_TYPE>=8192 and RDB$TRIGGER_TYPE<=8196 order by rdb$Trigger_Name'
+  else
+  if ObjectType = otDDLTriggers then // DDL Triggers
+    sqQuery.SQL.Text:= 'SELECT rdb$Trigger_Name FROM RDB$TRIGGERS WHERE RDB$SYSTEM_FLAG=0 and RDB$TRIGGER_TYPE>=16384 order by rdb$Trigger_Name'
   else
   if ObjectType = otViews then // Views
     sqQuery.SQL.Text:= 'SELECT DISTINCT RDB$VIEW_NAME FROM RDB$VIEW_RELATIONS order by rdb$View_Name'
@@ -339,7 +345,7 @@ begin
       ' END AS trigger_enabled, ' +
       ' RDB$DESCRIPTION AS trigger_comment ' +
       ' FROM RDB$TRIGGERS ' +
-      ' WHERE UPPER(RDB$TRIGGER_NAME)=''' + ATriggerName + ''' ';
+      ' WHERE UPPER(TRIM(RDB$TRIGGER_NAME))=''' + UpperCase(ATriggerName) + ''' ';
 
     sqQuery.Open;
     Body:= Trim(sqQuery.FieldByName('Trigger_Body').AsString);
