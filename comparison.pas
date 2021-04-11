@@ -356,6 +356,7 @@ var
   OtherTableName, OtherFieldName, UpdateRule, DeleteRule: string;
   IsPrimary: Boolean;
   ConstraintName: string;
+  NotNull: Boolean;
 begin
   {todo: if posssible merge this with create object statements generated
    in scriptdb code}
@@ -501,25 +502,27 @@ begin
       if (ObjectType = otDomains) and cxDomains.Checked then // Domains
       for i:= 0 to FDBObjectsList[ord(ObjectType)].Count - 1 do
       begin
-        dmSysTables.GetDomainInfo(FDBIndex, FDBObjectsList[ord(ObjectType)].Strings[i], DomainType, DomainSize, DefaultValue, CheckConstraint, CharacterSet, Collation);
+        dmSysTables.GetDomainInfo(FDBIndex, FDBObjectsList[ord(ObjectType)].Strings[i], DomainType, DomainSize, DefaultValue, CheckConstraint, CharacterSet, Collation, NotNull);
 
         Line:= 'Create Domain ' + FDBObjectsList[ord(ObjectType)].Strings[i] + ' as ' + DomainType;
         // String size
         if Pos('CHAR', DomainType) > 0 then
+        begin
           Line:= Line + '(' + IntToStr(DomainSize) + ')';
+          if CharacterSet <> '' then
+            Line:= Line + ' CHARACTER SET ' +  CharacterSet;
+        end;
         // Default value, if any
         if DefaultValue<>'' then
-          Line:= Line + ' ' + DefaultValue;
+          Line:= Line + ' DEFAULT ' + DefaultValue;
+
+        if NotNull then
+          Line := Line + ' NOT NULL';
 
         // Check constraint, if any:
         if CheckConstraint <> '' then
           Line:= Line + ' ' + CheckConstraint;
 
-        { Character sets not supported for domains apparently at
-        least not in Firebird 2.5
-        if CharacterSet <> '' then
-          Line:= Line + ' CHARACTER SET ' +  CharacterSet;
-        }
         // Collation for text types, if any:
         if Collation <> '' then
           Line:= Line + ' COLLATE ' +  Collation;
@@ -1122,6 +1125,7 @@ var
   CCheckConstraint, CCharacterSet, CCollation: string;
   CDomainType, CDefaultValue: string;
   DomainSize, CDomainSize: Integer;
+  CNotNull, NotNull: Boolean;
 begin
   meLog.Lines.Add('');
   meLog.Lines.Add('Modified Domains');
@@ -1137,8 +1141,8 @@ begin
     DomainName:= FDBExistingObjectsList[ord(otDomains)][i];
 
     // Read all domain properties
-    dmSysTables.GetDomainInfo(FDBIndex, DomainName, DomainType, DomainSize, DefaultValue, CheckConstraint, CharacterSet, Collation);
-    dmSysTables.GetDomainInfo(cbComparedDatabase.ItemIndex, DomainName, CDomainType, CDomainSize, CDefaultValue, CCheckConstraint, CCharacterSet, CCollation);
+    dmSysTables.GetDomainInfo(FDBIndex, DomainName, DomainType, DomainSize, DefaultValue, CheckConstraint, CharacterSet, Collation, NotNull);
+    dmSysTables.GetDomainInfo(cbComparedDatabase.ItemIndex, DomainName, CDomainType, CDomainSize, CDefaultValue, CCheckConstraint, CCharacterSet, CCollation, CNotNull);
 
     // Compare
     if (DomainType <> CDomainType) or
@@ -1146,7 +1150,8 @@ begin
        (DefaultValue <> CDefaultValue) or
        (CheckConstraint <> CCheckConstraint) or
        (CharacterSet <> CCharacterSet) or
-       (Collation <> CCollation) then
+       (Collation <> CCollation) or
+       (NotNull <> CNotNull) then
     begin
       meLog.Lines.Add(' ' + DomainName);
       FModifiedDomainsList.Add(DomainName);
@@ -1746,6 +1751,7 @@ var
   DomainType, DefaultValue: string;
   DomainSize: Integer;
   Line: string;
+  NotNull: Boolean;
 begin
   if FModifiedDomainsList.Count > 0 then
   begin
@@ -1756,7 +1762,7 @@ begin
   for i:= 0 to FModifiedDomainsList.Count - 1 do
   begin
     DomainName:= FModifiedDomainsList[i];
-    dmSysTables.GetDomainInfo(FDBIndex, DomainName, DomainType, DomainSize, DefaultValue, CheckConstraint, CharacterSet, Collation);
+    dmSysTables.GetDomainInfo(FDBIndex, DomainName, DomainType, DomainSize, DefaultValue, CheckConstraint, CharacterSet, Collation, NotNull);
     FQueryWindow.meQuery.Lines.Add('');
     Line:= 'Alter DOMAIN ' + DomainName + ' type ' + DomainType;
     if Pos('char', LowerCase(DomainType)) > 0 then

@@ -76,7 +76,8 @@ type
     function GetExceptionInfo(dbIndex: integer; ExceptionName: string; var Msg, Description, SqlQuery: string; CreateOrAlter: boolean): Boolean;
     // Gets information about domain
     procedure GetDomainInfo(dbIndex: integer; DomainName: string; var DomainType: string;
-      var DomainSize: Integer; var DefaultValue: string; var CheckConstraint: string; var CharacterSet: string; var Collation: string);
+      var DomainSize: Integer; var DefaultValue: string; var CheckConstraint: string;
+      var CharacterSet: string; var Collation: string; var NotNull: Boolean);
     function GetConstraintForeignKeyFields(AIndexName: string; SqlQuery: TSQLQuery): string;
 
     function GetDBUsers(dbIndex: Integer; ObjectName: string = ''): string;
@@ -639,8 +640,9 @@ end;
 
 (**********  Get Constraint Info  ********************)
 
-function TdmSysTables.GetConstraintInfo(dbIndex: Integer; ATableName, ConstraintName: string; var KeyName,
-    CurrentTableName, CurrentFieldName, OtherTableName, OtherFieldName, UpdateRule, DeleteRule: string): Boolean;
+function TdmSysTables.GetConstraintInfo(dbIndex: integer; ATableName,
+  ConstraintName: string; var KeyName, CurrentTableName, CurrentFieldName,
+  OtherTableName, OtherFieldName, UpdateRule, DeleteRule: string): Boolean;
 begin
   Init(dbIndex);
   sqQuery.Close;
@@ -709,8 +711,10 @@ end;
 
 (************  View Domain info  ***************)
 
-procedure TdmSysTables.GetDomainInfo(dbIndex: Integer; DomainName: string; var DomainType: string;
-  var DomainSize: Integer; var DefaultValue: string; var CheckConstraint: string; var CharacterSet: string; var Collation: string);
+procedure TdmSysTables.GetDomainInfo(dbIndex: integer; DomainName: string;
+  var DomainType: string; var DomainSize: Integer; var DefaultValue: string;
+  var CheckConstraint: string; var CharacterSet: string; var Collation: string;
+  var NotNull: Boolean);
 const
   // Select domain and associated collation (if text type domain)
   // note weird double join fields required...
@@ -757,6 +761,7 @@ begin
     CheckConstraint:= trim(sqQuery.FieldByName('RDB$VALIDATION_SOURCE').AsString); //e.g. CHECK (VALUE > 10000 AND VALUE <= 2000000)
     CharacterSet:= trim(sqQuery.FieldByName('rdb$character_set_name').AsString);
     Collation:= trim(sqQuery.FieldByName('rdb$collation_name').AsString);
+    NotNull := sqQuery.FieldByName('RDB$NULL_FLAG').AsInteger <> 0;
   end
   else
     DomainSize:= 0;
@@ -972,8 +977,9 @@ end;
 function TdmSysTables.GetDomainTypeSize(dbIndex: Integer; DomainTypeName: string): Integer;
 var
   DomainType, DefaultValue, CheckConstraint, CharacterSet, Collation: string;
+  NotNull: Boolean;
 begin
-  GetDomainInfo(dbIndex, DomainTypeName, DomainType, Result, DefaultValue, CheckConstraint, CharacterSet, Collation);
+  GetDomainInfo(dbIndex, DomainTypeName, DomainType, Result, DefaultValue, CheckConstraint, CharacterSet, Collation, NotNull);
 end;
 
 

@@ -215,26 +215,32 @@ var
   DomainSize: Integer;
   CheckConstraint: string;
   DefaultValue: string;
+  NotNull: Boolean;
 begin
   List.CommaText:= dmSysTables.GetDBObjectNames(dbIndex, otDomains, Count);
   // Get domains in dependency order (if dependencies can exist between domains)
   dmSysTables.SortDependencies(List);
   for i:= 0 to List.Count - 1 do
   begin
-    dmSysTables.GetDomainInfo(dbIndex, List[i], DomainType, DomainSize, DefaultValue, CheckConstraint, CharacterSet, Collation);
+    dmSysTables.GetDomainInfo(dbIndex, List[i], DomainType, DomainSize, DefaultValue, CheckConstraint, CharacterSet, Collation, NotNull);
 
     List[i]:= 'Create Domain ' + List[i] + ' as ' + DomainType;
     if (Pos('CHAR', DomainType) > 0) or (DomainType = 'CSTRING') then
+    begin
       List[i]:= List[i] + '(' + IntToStr(DomainSize) + ')';
-    List[i]:= List[i] + ' ' + DefaultValue;
+      if CharacterSet <> '' then
+        List[i]:= List[i] + ' CHARACTER SET ' + CharacterSet;
+    end;
+
+    List[i]:= List[i] + ' DEFAULT ' + DefaultValue;
+
+    if NotNull then
+      List[i]:= List[i] + ' NOT NULL';
+
     // Check constraint, if any:
     if CheckConstraint <> '' then
       List[i]:= List[i] + ' ' + CheckConstraint;
 
-    { Character set is apparently not supported for domains, at least in FB2.5
-    if CharacterSet <> '' then
-      List[i]:= List[i] + ' CHARACTER SET ' + CharacterSet;
-    }
     // Collation for text types, if any:
     if Collation <> '' then
       List[i]:= List[i] + ' COLLATE ' +  Collation;

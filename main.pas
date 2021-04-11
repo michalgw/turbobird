@@ -2487,6 +2487,7 @@ var
   ATab: TTabSheet;
   dbIndex: Integer;
   Title: string;
+  NotNull: Boolean;
 begin
   SelNode:= tvMain.Selected;
   if (SelNode <> nil) and (SelNode.Parent <> nil) then
@@ -2511,7 +2512,7 @@ begin
     PageControl1.ActivePage:= ATab;
 
     dbIndex:= PtrInt(SelNode.Parent.Parent.Data);
-    dmSysTables.GetDomainInfo(dbIndex, ADomainName, DomainType, DomainSize, DefaultValue, CheckConstraint, CharacterSet, Collation);
+    dmSysTables.GetDomainInfo(dbIndex, ADomainName, DomainType, DomainSize, DefaultValue, CheckConstraint, CharacterSet, Collation, NotNull);
     ATab.Tag:= dbIndex;
     if Pos('default', LowerCase(DefaultValue)) = 1 then
       DefaultValue:= Trim(Copy(DefaultValue, 8, Length(DefaultValue)));
@@ -2531,6 +2532,7 @@ begin
       laCheckConstraint.Caption:= CheckConstraint;
       laCharacterSet.Caption:= CharacterSet;
       laCollation.Caption:= Collation;
+      cbNotNull.Checked := NotNull;
     end;
     ADomainForm.Show;
   end;
