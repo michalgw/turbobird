@@ -743,12 +743,16 @@ begin
 
   if sqQuery.RecordCount > 0 then
   begin
+    // Get CHARACTER_LENGTH for character fields
+    if sqQuery.FieldByName('RDB$FIELD_TYPE').AsInteger in [14, 37, 40] then
+      DomainSize := sqQuery.FieldByName('RDB$CHARACTER_LENGTH').AsInteger
+    else
+      DomainSize := sqQuery.FieldByName('RDB$FIELD_LENGTH').AsInteger;
     DomainType:= GetFBTypeName(sqQuery.FieldByName('RDB$FIELD_TYPE').AsInteger,
       sqQuery.FieldByName('RDB$FIELD_SUB_TYPE').AsInteger,
-      sqQuery.FieldByName('RDB$FIELD_LENGTH').AsInteger,
+      DomainSize,
       sqQuery.FieldByName('RDB$FIELD_PRECISION').AsInteger,
       sqQuery.FieldByName('RDB$FIELD_SCALE').AsInteger);
-    DomainSize:= sqQuery.FieldByName('RDB$FIELD_LENGTH').AsInteger;
     DefaultValue:= trim(sqQuery.FieldByName('RDB$DEFAULT_SOURCE').AsString);
     CheckConstraint:= trim(sqQuery.FieldByName('RDB$VALIDATION_SOURCE').AsString); //e.g. CHECK (VALUE > 10000 AND VALUE <= 2000000)
     CharacterSet:= trim(sqQuery.FieldByName('rdb$character_set_name').AsString);
