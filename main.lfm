@@ -3254,6 +3254,36 @@ object fmMain: TfmMain
       Caption = 'Edit Field'
       OnClick = lmEditFieldClick
     end
+    object lmCreateDbTrigger: TMenuItem
+      Tag = 31
+      Caption = 'Create new Database Trigger'
+      OnClick = lmCreateDbTriggerClick
+    end
+    object lmViewDbTrigger: TMenuItem
+      Tag = 32
+      Caption = 'View DB Trigger'
+      OnClick = lmViewDbTriggerClick
+    end
+    object lmEditDbTrigger: TMenuItem
+      Tag = 32
+      Caption = 'Edit DB Trigger'
+      OnClick = lmEditDbTriggerClick
+    end
+    object lmActivateDbTrigger: TMenuItem
+      Tag = 32
+      Caption = 'Activate DB Trigger'
+      OnClick = lmActivateDbTriggerClick
+    end
+    object lmDeActivateDbTrigger: TMenuItem
+      Tag = 32
+      Caption = 'DeActivate DB Trigger'
+      OnClick = lmDeActivateDbTriggerClick
+    end
+    object lmDropDbTrigger: TMenuItem
+      Tag = 32
+      Caption = 'Drop DB Trigger'
+      OnClick = lmDropTriggerClick
+    end
   end
   object mdsHistory: TMemDataset
     FieldDefs = <    

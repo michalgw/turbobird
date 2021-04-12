@@ -29,11 +29,17 @@ type
   { TfmMain }
 
   TfmMain = class(TForm)
-      editorFontDialog: TFontDialog;
-      Image1: TImage;
+    editorFontDialog: TFontDialog;
+    Image1: TImage;
     ImageList1: TImageList;
     lmDropDomain: TMenuItem;
     lmDropTrigger: TMenuItem;
+    lmCreateDbTrigger: TMenuItem;
+    lmActivateDbTrigger: TMenuItem;
+    lmDeActivateDbTrigger: TMenuItem;
+    lmDropDbTrigger: TMenuItem;
+    lmViewDbTrigger: TMenuItem;
+    lmEditDbTrigger: TMenuItem;
     mnOptions: TMenuItem;
     mnEditorFont: TMenuItem;
     toolbarImages: TImageList;
@@ -131,6 +137,7 @@ type
     procedure FormClose(Sender: TObject; var CloseAction: TCloseAction);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure lmActivateDbTriggerClick(Sender: TObject);
     procedure lmAddUserClick(Sender: TObject);
     procedure lmBackupClick(Sender: TObject);
     procedure lmChangePasswordClick(Sender: TObject);
@@ -139,10 +146,13 @@ type
     procedure lmCopyUserPermissionClick(Sender: TObject);
     procedure lmCopyTableClick(Sender: TObject);
     procedure lmCreateDBClick(Sender: TObject);
+    procedure lmCreateDbTriggerClick(Sender: TObject);
     procedure lmDBInfoClick(Sender: TObject);
+    procedure lmDeActivateDbTriggerClick(Sender: TObject);
     procedure lmDisconnectClick(Sender: TObject);
     procedure lmDropDomainClick(Sender: TObject);
     procedure lmDropTriggerClick(Sender: TObject);
+    procedure lmEditDbTriggerClick(Sender: TObject);
     procedure lmEditFieldClick(Sender: TObject);
     procedure lmGetIncrementGenClick(Sender: TObject);
     procedure lmImportTableClick(Sender: TObject);
@@ -184,6 +194,7 @@ type
     procedure lmSweepClick(Sender: TObject);
     procedure lmTableManageClick(Sender: TObject);
     procedure lmUserPermManagementClick(Sender: TObject);
+    procedure lmViewDbTriggerClick(Sender: TObject);
     procedure lmViewDomainClick(Sender: TObject);
     procedure lmDisplayViewClick(Sender: TObject);
     // Expand table field nodes
@@ -269,6 +280,7 @@ type
     procedure ShowIndicesManagement(AForm: TForm; DatabaseIndex: Integer; ATableName: string);
     function GetTableNames(dbIndex: Integer): string;
     function CreateNewTrigger(dbIndex: Integer; ATableName: string; OnCommitProcedure: TNotifyEvent = nil): Boolean;
+    function CreateNewDbTrigger(dbIndex: Integer; OnCommitProcedure: TNotifyEvent = nil): Boolean;
     function AddToSQLHistory(DatabaseTitle: string; SQLType, SQLStatement: string): Boolean;
     function SaveAndCloseSQLHistory: Boolean;
     function OpenSQLHistory(DatabaseTitle: string): Boolean;
@@ -295,9 +307,10 @@ implementation
 { TfmMain }
 
 uses CreateDb, ViewView, ViewTrigger, ViewSProc, ViewGen, NewTable, NewGen,
-     EnterPass, CreateTrigger, EditTable, CallProc, EditDataFullRec, UDFInfo, ViewDomain,
-     NewDomain, SysTables, Scriptdb, UserPermissions, BackupRestore, UnitFirebirdServices, CreateUser, ChangePass,
-     PermissionManage, CopyTable, About, NewEditField, dbInfo, Comparison;
+  EnterPass, CreateTrigger, EditTable, CallProc, EditDataFullRec, UDFInfo,
+  ViewDomain, NewDomain, SysTables, Scriptdb, UserPermissions, BackupRestore,
+  UnitFirebirdServices, CreateUser, ChangePass, PermissionManage, CopyTable,
+  About, NewEditField, dbInfo, Comparison, CreateDbTrigger, ViewDbTrigger;
 
 
 procedure TfmMain.mnExitClick(Sender: TObject);
@@ -325,6 +338,15 @@ begin
   except
     // Ignore exceptions/errors; just close
   end;
+end;
+
+procedure TfmMain.lmActivateDbTriggerClick(Sender: TObject);
+var
+  SelNode: TTreeNode;
+begin
+  SelNode:= tvMain.Selected;
+  if ChangeTriggerActivity(PtrInt(SelNode.Parent.Parent.Data), SelNode.Text, True) then
+    MessageDlg('Trigger has been activated', mtInformation, [mbOk], 0);
 end;
 
 (*****************  Add New user  ***********************)
@@ -482,6 +504,17 @@ begin
   mnCreateDBClick(nil);
 end;
 
+procedure TfmMain.lmCreateDbTriggerClick(Sender: TObject);
+var
+  SelNode: TTreeNode;
+  DBIndex: Integer;
+begin
+  SelNode:= tvMain.Selected;
+  DBIndex:= PtrInt(SelNode.Parent.Data);
+
+  CreateNewDbTrigger(DBIndex);
+end;
+
 procedure TfmMain.lmDBInfoClick(Sender: TObject);
 var
   ATab: TTabSheet;
@@ -513,6 +546,15 @@ begin
   ATab.Caption:= Title;
 
   fmDBInfo.Init(dbIndex);
+end;
+
+procedure TfmMain.lmDeActivateDbTriggerClick(Sender: TObject);
+var
+  SelNode: TTreeNode;
+begin
+  SelNode:= tvMain.Selected;
+  if ChangeTriggerActivity(PtrInt(SelNode.Parent.Parent.Data), SelNode.Text, False) then
+    MessageDlg('Trigger has been DeActivated', mtInformation, [mbOk], 0);
 end;
 
 procedure TfmMain.lmDisconnectClick(Sender: TObject);
@@ -577,6 +619,25 @@ begin
     QWindow.meQuery.Lines.Add('DROP TRIGGER "' + SelNode.Text + '";');
     QWindow.Show;
   end;
+end;
+
+procedure TfmMain.lmEditDbTriggerClick(Sender: TObject);
+var
+  SelNode: TTreeNode;
+  QWindow: TfmQueryWindow;
+  ATriggerName: string;
+begin
+  SelNode:= tvMain.Selected;
+  if (SelNode <> nil) and (SelNode.Parent <> nil) then
+  begin
+    ATriggerName:= SelNode.Text;
+    QWindow:= ShowQueryWindow(PtrInt(SelNode.Parent.Parent.Data), 'Edit DB Trigger ' + ATriggerName);
+
+    QWindow.meQuery.Lines.Clear;
+    dmSysTables.ScriptDbTrigger(PtrInt(SelNode.Parent.Parent.Data), ATriggerName, QWindow.meQuery.Lines);
+    QWindow.Show;
+  end;
+
 end;
 
 procedure TfmMain.lmEditFieldClick(Sender: TObject);
@@ -988,6 +1049,37 @@ begin
     if OnCommitProcedure <> nil then
       QWindow.OnCommit:= OnCommitProcedure;
   end;
+end;
+
+function TfmMain.CreateNewDbTrigger(dbIndex: Integer;
+  OnCommitProcedure: TNotifyEvent): Boolean;
+var
+  QWindow: TfmQueryWindow;
+  TrigType: string;
+begin
+  Result:= False;
+
+  fmCreateDbTrigger := TfmCreateDbTrigger.Create(Application);
+  if fmCreateDbTrigger.ShowModal = mrOK then
+  begin
+    Result:= True;
+    QWindow:= ShowQueryWindow(dbIndex, 'Create new DB Trigger');
+
+    QWindow.meQuery.Lines.Clear;
+    QWindow.meQuery.Lines.Add('CREATE TRIGGER ' + fmCreateDbTrigger.edTriggerName.Text);
+    QWindow.meQuery.Lines.Add('Active');
+    QWindow.meQuery.Lines.Add('ON ' + fmCreateDbTrigger.cbDbEvent.Text);
+    QWindow.meQuery.Lines.Add('Position 0');
+    QWindow.meQuery.Lines.Add('AS');
+    QWindow.meQuery.Lines.Add('BEGIN');
+    QWindow.meQuery.Lines.Add(' -- Your code here');
+    QWindow.meQuery.Lines.Add('END;');
+    fmMain.Show;
+
+    if OnCommitProcedure <> nil then
+      QWindow.OnCommit:= OnCommitProcedure;
+  end;
+  fmCreateDbTrigger.Free;
 end;
 
 (*******  Create Trigger click  ********)
@@ -2493,6 +2585,69 @@ begin
   lmRolePerManagementClick(nil);
 end;
 
+procedure TfmMain.lmViewDbTriggerClick(Sender: TObject);
+var
+  SelNode: TTreeNode;
+  ATriggerName: string;
+  Event: string;
+  TriggerEnabled: Boolean;
+  Body: string;
+  TriggerPosition: Integer;
+  ATab: TTabSheet;
+  Title: string;
+  dbIndex: Integer;
+begin
+  SelNode:= tvMain.Selected;
+  if (SelNode <> nil) and (SelNode.Parent <> nil) then
+  begin
+    ATriggerName:= SelNode.Text;
+    Title:= SelNode.Parent.Parent.Text +  ': DB Trigger : ' + ATriggerName;
+    dbIndex:= PtrInt(SelNode.Parent.Parent.Data);
+    dmSysTables.GetDbTriggerInfo(dbIndex, ATriggerName, Event, Body,
+      TriggerEnabled, TriggerPosition);
+
+    // Fill ViewTrigger form
+    fmViewDbTrigger:= FindCustomForm(Title, TfmViewDbTrigger) as TfmViewDbTrigger;
+    if fmViewDbTrigger = nil then
+    begin
+      fmViewDbTrigger:= TfmViewDbTrigger.Create(Application);
+      ATab:= TTabSheet.Create(self);
+      ATab.Parent:= PageControl1;
+      fmViewDbTrigger.Parent:= ATab;
+      fmViewDbTrigger.Left:= 0;
+      fmViewDbTrigger.Top:= 0;
+      fmViewDbTrigger.BorderStyle:= bsNone;
+      fmViewDbTrigger.Align:= alClient;
+    end
+    else
+      ATab:= fmViewDbTrigger.Parent as TTabSheet;
+
+    PageControl1.ActivePage:= ATab;
+    ATab.Tag:= dbIndex;
+    with fmViewDbTrigger do
+    begin
+      Caption:= Title;
+      ATab.Caption:= Caption;
+      edName.Caption:= ATriggerName;
+      laEvent.Caption:= Event;
+      laPos.Caption:= IntToStr(TriggerPosition);
+      seScript.Lines.Text:= Body;
+      if TriggerEnabled then
+      begin
+        laEnabled.Caption:= 'Yes';
+        laEnabled.Font.Color:= clGreen;
+      end
+      else
+      begin
+        laEnabled.Caption:= 'No';
+        laEnabled.Font.Color:= clRed;
+      end;
+    end;
+    fmViewDbTrigger.Show;
+  end;
+
+end;
+
 (**********  View Domain info ************)
 
 procedure TfmMain.lmViewDomainClick(Sender: TObject);
@@ -3890,6 +4045,9 @@ begin
     if ParentNodeText = 'Triggers' then // Triggers
       Filter:= 3
     else
+    if ParentNodeText = 'Database Triggers' then // Database Triggers
+      Filter:= 32
+    else
     if ParentNodeText = 'Views' then // View
       Filter:= 4
     else
@@ -3931,6 +4089,9 @@ begin
     else
     if NodeText = 'Triggers' then // Triggers root
       Filter:= 13
+    else
+    if NodeText = 'Database Triggers' then // Database Triggers root
+      Filter:= 31
     else
     if NodeText = 'Domains' then // Domains root
       Filter:= 18
@@ -4019,6 +4180,7 @@ begin
           end;
           'Generators': lmViewGenClick(nil);
           'Triggers': lmViewTriggerClick(nil);
+          'Database Triggers': lmViewDbTriggerClick(nil);
           'Views': lmDisplay1000VClick(nil);
           'Stored Procedures': lmViewStoredProcedureClick(nil);
           'Functions': lmViewUDFClick(nil);

@@ -8,6 +8,7 @@
         <CompatibilityMode Value="True"/>
       </Flags>
       <SessionStorage Value="InProjectDir"/>
+      <AutoCreateForms Value="False"/>
       <Title Value="TurboBird"/>
       <ResourceType Value="res"/>
       <UseXPManifest Value="True"/>
@@ -107,7 +108,7 @@
         <PackageName Value="LCL"/>
       </Item6>
     </RequiredPackages>
-    <Units Count="45">
+    <Units Count="47">
       <Unit0>
         <Filename Value="TurboBird.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -432,6 +433,20 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="CsvDocument"/>
       </Unit44>
+      <Unit45>
+        <Filename Value="createdbtrigger.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="fmCreateDbTrigger"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="CreateDbTrigger"/>
+      </Unit45>
+      <Unit46>
+        <Filename Value="viewdbtrigger.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="fmViewDbTrigger"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ViewDbTrigger"/>
+      </Unit46>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

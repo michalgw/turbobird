@@ -50,11 +50,18 @@ type
     function GetTriggerInfo(DatabaseIndex: Integer; ATriggername: string;
       var AfterBefore, OnTable, Event, Body: string; var TriggerEnabled: Boolean;
       var TriggerPosition: Integer): Boolean;
+    // Gets information on specified database trigger
+    function GetDbTriggerInfo(DatabaseIndex: Integer; ATriggername: string;
+      var Event, Body: string; var TriggerEnabled: Boolean;
+      var TriggerPosition: Integer): Boolean;
     // Scripts all check constraints for a database's tables as alter table
     // statement, adding the SQL to List
     function ScriptCheckConstraints(dbIndex: Integer; List: TStrings): boolean;
     // Script trigger creation for specified trigger
     function ScriptTrigger(dbIndex: Integer; ATriggerName: string; List: TStrings;
+      AsCreate: Boolean = False): Boolean;
+    // Script database trigger creation for specified database trigger
+    function ScriptDbTrigger(dbIndex: Integer; ATriggerName: string; List: TStrings;
       AsCreate: Boolean = False): Boolean;
     // Used e.g. in scripting foreign keys
     function GetTableConstraints(ATableName: string; var SqlQuery: TSQLQuery;
@@ -384,6 +391,46 @@ begin
   end;
 end;
 
+function TdmSysTables.GetDbTriggerInfo(DatabaseIndex: Integer;
+  ATriggername: string; var Event, Body: string; var TriggerEnabled: Boolean;
+  var TriggerPosition: Integer): Boolean;
+begin
+  try
+    Init(DatabaseIndex);
+    sqQuery.Close;
+    sqQuery.SQL.Text:= 'SELECT RDB$TRIGGER_NAME AS trigger_name, ' +
+      '  RDB$TRIGGER_SOURCE AS trigger_body, ' +
+      '  RDB$TRIGGER_TYPE as Trigger_Type, ' +
+      '  RDB$Trigger_Sequence as TPos, ' +
+      '   CASE RDB$TRIGGER_INACTIVE ' +
+      '   WHEN 1 THEN 0 ELSE 1 ' +
+      ' END AS trigger_enabled, ' +
+      ' RDB$DESCRIPTION AS trigger_comment ' +
+      ' FROM RDB$TRIGGERS ' +
+      ' WHERE UPPER(TRIM(RDB$TRIGGER_NAME))=''' + UpperCase(ATriggerName) + ''' ';
+
+    sqQuery.Open;
+    Body:= Trim(sqQuery.FieldByName('Trigger_Body').AsString);
+    TriggerEnabled:= sqQuery.FieldByName('Trigger_Enabled').AsBoolean;
+    TriggerPosition:= sqQuery.FieldByName('TPos').AsInteger;
+    case sqQuery.FieldByName('Trigger_Type').AsInteger of
+      8192: Event := 'ON CONNECT';
+      8193: Event := 'ON DISCONNECT';
+      8194: Event := 'ON TRANSACTION START';
+      8195: Event := 'ON TRANSACTION COMMIT';
+      8196: Event := 'ON TRANSACTION ROLLBACK';
+    end;
+    sqQuery.Close;
+    Result:= True;
+  except
+    on E: Exception do
+    begin
+      MessageDlg('Error: ' + e.Message, mtError, [mbOk], 0);
+      Result:= False;
+    end;
+  end;
+end;
+
 function TdmSysTables.ScriptCheckConstraints(dbIndex: Integer; List: TStrings
   ): boolean;
 const
@@ -449,6 +496,39 @@ begin
         List.Add('INACTIVE');
 
     List.Add(AfterBefore + ' ' + Event);
+    List.Add('Position ' + IntToStr(TriggerPosition));
+
+    List.Text:= List.Text + Body + ' ^';
+    List.Add('SET TERM ; ^');
+  end;
+end;
+
+(****************  Script Database Trigger  ***************)
+
+function TdmSysTables.ScriptDbTrigger(dbIndex: Integer; ATriggerName: string;
+  List: TStrings; AsCreate: Boolean): Boolean;
+var
+  Body: string;
+  Event: string;
+  TriggerEnabled: Boolean;
+  TriggerPosition: Integer;
+begin
+  Result:= GetDbTriggerInfo(dbIndex, ATriggerName, Event, Body, TriggerEnabled, TriggerPosition);
+  if Result then
+  begin
+    List.Add('SET TERM ^ ;');
+    if AsCreate then
+      List.Add('Create Trigger ' + ATriggerName)
+    else
+      List.Add('Alter Trigger ' + ATriggerName);
+      if TriggerEnabled then
+        List.Add('ACTIVE')
+      else
+        List.Add('INACTIVE');
+
+    if AsCreate then
+      List.Add('ON ' + Event);
+
     List.Add('Position ' + IntToStr(TriggerPosition));
 
     List.Text:= List.Text + Body + ' ^';
