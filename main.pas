@@ -2785,7 +2785,7 @@ begin
       ActiveStr:= 'Active'
     else
       ActiveStr:= 'InActive';
-    SQLQuery1.SQL.Text:= 'alter trigger '+ ATriggerName + ' ' + ActiveStr;
+    SQLQuery1.SQL.Text:= 'alter trigger "'+ ATriggerName + '" ' + ActiveStr;
 
     SQLQuery1.ExecSQL;
     Result:= True;
