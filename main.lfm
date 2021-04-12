@@ -3098,6 +3098,11 @@ object fmMain: TfmMain
       Caption = 'DeActivate Trigger'
       OnClick = lmDeactiveTrigClick
     end
+    object lmDropTrigger: TMenuItem
+      Tag = 3
+      Caption = 'Drop Trigger'
+      OnClick = lmDropTriggerClick
+    end
     object lmNewUDF: TMenuItem
       Tag = 16
       Caption = 'Create new function'
