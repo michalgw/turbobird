@@ -46,6 +46,7 @@ type
     lmActivateDdlTrigger: TMenuItem;
     lmDeActivateDdlTrigger: TMenuItem;
     lmDropDdlTrigger: TMenuItem;
+    lmDropUDF: TMenuItem;
     mnOptions: TMenuItem;
     mnEditorFont: TMenuItem;
     toolbarImages: TImageList;
@@ -159,6 +160,7 @@ type
     procedure lmDisconnectClick(Sender: TObject);
     procedure lmDropDomainClick(Sender: TObject);
     procedure lmDropTriggerClick(Sender: TObject);
+    procedure lmDropUDFClick(Sender: TObject);
     procedure lmEditDbTriggerClick(Sender: TObject);
     procedure lmEditDdlTriggerClick(Sender: TObject);
     procedure lmEditFieldClick(Sender: TObject);
@@ -626,7 +628,6 @@ end;
 procedure TfmMain.lmDropTriggerClick(Sender: TObject);
 var
   SelNode: TTreeNode;
-  ADomainName: string;
   QWindow: TfmQueryWindow;
 begin
   SelNode:= tvMain.Selected;
@@ -639,6 +640,25 @@ begin
     QWindow:= ShowQueryWindow(PtrInt(SelNode.Parent.Parent.Data), 'Drop Trigger');
     QWindow.meQuery.Lines.Clear;
     QWindow.meQuery.Lines.Add('DROP TRIGGER "' + SelNode.Text + '";');
+    QWindow.Show;
+  end;
+end;
+
+procedure TfmMain.lmDropUDFClick(Sender: TObject);
+var
+  SelNode: TTreeNode;
+  QWindow: TfmQueryWindow;
+begin
+  SelNode:= tvMain.Selected;
+  if MessageDlg('Are you sure you want to delete ' + SelNode.Text + ' permanently', mtConfirmation,
+    [mbYes, mbNo], 0) = mrYes then
+  begin
+    // Move selection to tables above so object is not in use when deleting it
+    SelNode.Collapse(true);
+    SelNode.Parent.Selected:=true;
+    QWindow:= ShowQueryWindow(PtrInt(SelNode.Parent.Parent.Data), 'Drop Trigger');
+    QWindow.meQuery.Lines.Clear;
+    QWindow.meQuery.Lines.Add('DROP EXTERNAL FUNCTION "' + SelNode.Text + '";');
     QWindow.Show;
   end;
 end;
@@ -1874,9 +1894,9 @@ begin
   ModuleName:= '<modulename>';
   EntryPoint:= '<entryname>';
   if (SelNode <> nil) and (SelNode.Parent <> nil) then
-  if InputQuery('Create new function', 'Please enter new function name', AFuncName) then
-  if InputQuery('Create new function', 'Please enter module name (Library)', ModuleName) then
-  if InputQuery('Create new function', 'Please enter entry point (External function name)', EntryPoint) then
+  if InputQuery('Create new UDF function', 'Please enter new function name', AFuncName) then
+  if InputQuery('Create new UDF function', 'Please enter module name (Library)', ModuleName) then
+  if InputQuery('Create new UDF function', 'Please enter entry point (External function name)', EntryPoint) then
   begin
     QWindow:= ShowQueryWindow(PtrInt(SelNode.Parent.Data), 'Create new function');
     QWindow.meQuery.Lines.Clear;
@@ -2086,7 +2106,7 @@ begin
         Lines.Add('');
         Lines.Add('--     Functions (UDF)');
         Lines.Add('');
-        ScriptAllFunctions(dbIndex, List);
+        ScriptAllUDFFunctions(dbIndex, List);
         Lines.AddStrings(List);
 
         Lines.Add('');
@@ -3398,7 +3418,7 @@ begin
       end
       else
         // UDF (Functions)
-      if Node.Text = 'Functions' then
+      if Node.Text = 'UDFs' then
       begin
         UDFNode:= Node;
         Objects.CommaText:= dmSysTables.GetDBObjectNames(DBIndex, otUDF, Count);
@@ -4203,7 +4223,7 @@ begin
     if ParentNodeText = 'Stored Procedures' then // Stored Proc
       Filter:= 5
     else
-    if ParentNodeText = 'Functions' then // UDF
+    if ParentNodeText = 'UDFs' then // UDF
       Filter:= 6
     else
     if ParentNodeText = 'System Tables' then // System Tables
@@ -4230,7 +4250,7 @@ begin
     if NodeText = 'Stored Procedures' then // Stored Proc root
       Filter:= 15
     else
-    if NodeText = 'Functions' then // UDF root
+    if NodeText = 'UDFs' then // UDF root
       Filter:= 16
     else
     if NodeText = 'Views' then // Views root
@@ -4336,7 +4356,7 @@ begin
           'DDL Triggers': lmViewDdlTriggerClick(nil);
           'Views': lmDisplay1000VClick(nil);
           'Stored Procedures': lmViewStoredProcedureClick(nil);
-          'Functions': lmViewUDFClick(nil);
+          'UDFs': lmViewUDFClick(nil);
           'System Tables':
           begin
             lmViewFieldsClick(nil); // also works for system tables
@@ -4505,7 +4525,7 @@ begin
           CNode.ImageIndex:= 11;
           CNode.SelectedIndex:= 11;
 
-          CNode:= tvMain.Items.AddChild(MainNode, 'Functions');
+          CNode:= tvMain.Items.AddChild(MainNode, 'UDFs');
           CNode.ImageIndex:= 13;
           CNode.SelectedIndex:= 13;
 

@@ -14,7 +14,7 @@ uses
 // earlier db versions do not)
 function ScriptAllRoles(dbIndex: Integer; var List: TStringList): Boolean;
 // Scripts all UDF functions in a database
-function ScriptAllFunctions(dbIndex: Integer; var List: TStringList): Boolean;
+function ScriptAllUDFFunctions(dbIndex: Integer; var List: TStringList): Boolean;
 // Scripts all domains in a database
 function ScriptAllDomains(dbIndex: Integer; var List: TStringList): Boolean;
 // Scripts all exceptions defined in a database
@@ -141,7 +141,7 @@ begin
   end;
 end;
 
-function ScriptAllFunctions(dbIndex: Integer; var List: TStringList): Boolean;
+function ScriptAllUDFFunctions(dbIndex: Integer; var List: TStringList): Boolean;
 var
   Count: Integer;
   i: Integer;

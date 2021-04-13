@@ -3105,13 +3105,18 @@ object fmMain: TfmMain
     end
     object lmNewUDF: TMenuItem
       Tag = 16
-      Caption = 'Create new function'
+      Caption = 'Create new UDF function'
       OnClick = lmNewUDFClick
     end
     object lmViewUDF: TMenuItem
       Tag = 6
-      Caption = 'View Function'
+      Caption = 'View UDF Function'
       OnClick = lmViewUDFClick
+    end
+    object lmDropUDF: TMenuItem
+      Tag = 6
+      Caption = 'Drop UDF Function'
+      OnClick = lmDropUDFClick
     end
     object lmOpenSystemTable: TMenuItem
       Tag = 7
