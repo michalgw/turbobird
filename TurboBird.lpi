@@ -108,7 +108,7 @@
         <PackageName Value="LCL"/>
       </Item6>
     </RequiredPackages>
-    <Units Count="47">
+    <Units Count="49">
       <Unit0>
         <Filename Value="TurboBird.lpr"/>
         <IsPartOfProject Value="True"/>
@@ -437,6 +437,7 @@
         <Filename Value="createdbtrigger.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="fmCreateDbTrigger"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="CreateDbTrigger"/>
       </Unit45>
@@ -444,9 +445,25 @@
         <Filename Value="viewdbtrigger.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="fmViewDbTrigger"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="ViewDbTrigger"/>
       </Unit46>
+      <Unit47>
+        <Filename Value="createddltrigger.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="fmCreateDdlTrigger"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="CreateDdlTrigger"/>
+      </Unit47>
+      <Unit48>
+        <Filename Value="viewddltrigger.pas"/>
+        <IsPartOfProject Value="True"/>
+        <ComponentName Value="fmViewDdlTrigger"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="ViewDdlTrigger"/>
+      </Unit48>
     </Units>
   </ProjectOptions>
   <CompilerOptions>

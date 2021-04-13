@@ -24,7 +24,7 @@ uses
   PermissionManage, SQLHistory, CopyTable, dynlibs, ibase60dyn, dbInfo,
   sysutils, Comparison, Update, topologicalsort, UnitFirebirdServices,
   turbocommon, importtable, fileimport, csvdocument, sqldblib, CreateDbTrigger,
-  ViewDbTrigger;
+  ViewDbTrigger, CreateDdlTrigger, ViewDdlTrigger;
 
 const
   Major = 1;

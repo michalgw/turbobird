@@ -3284,6 +3284,36 @@ object fmMain: TfmMain
       Caption = 'Drop DB Trigger'
       OnClick = lmDropTriggerClick
     end
+    object lmCreateDdlTrigger: TMenuItem
+      Tag = 33
+      Caption = 'Create new DDL Trigger'
+      OnClick = lmCreateDdlTriggerClick
+    end
+    object lmViewDdlTrigger: TMenuItem
+      Tag = 34
+      Caption = 'View DDL Trigger'
+      OnClick = lmViewDdlTriggerClick
+    end
+    object lmEditDdlTrigger: TMenuItem
+      Tag = 34
+      Caption = 'Edit DDL Trigger'
+      OnClick = lmEditDdlTriggerClick
+    end
+    object lmActivateDdlTrigger: TMenuItem
+      Tag = 34
+      Caption = 'Activate DDL Trigger'
+      OnClick = lmActivateDbTriggerClick
+    end
+    object lmDeActivateDdlTrigger: TMenuItem
+      Tag = 34
+      Caption = 'DeActivate DDL Trigger'
+      OnClick = lmDeActivateDbTriggerClick
+    end
+    object lmDropDdlTrigger: TMenuItem
+      Tag = 34
+      Caption = 'Drop DDL Trigger'
+      OnClick = lmDropTriggerClick
+    end
   end
   object mdsHistory: TMemDataset
     FieldDefs = <    

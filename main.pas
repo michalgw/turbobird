@@ -40,6 +40,12 @@ type
     lmDropDbTrigger: TMenuItem;
     lmViewDbTrigger: TMenuItem;
     lmEditDbTrigger: TMenuItem;
+    lmCreateDdlTrigger: TMenuItem;
+    lmViewDdlTrigger: TMenuItem;
+    lmEditDdlTrigger: TMenuItem;
+    lmActivateDdlTrigger: TMenuItem;
+    lmDeActivateDdlTrigger: TMenuItem;
+    lmDropDdlTrigger: TMenuItem;
     mnOptions: TMenuItem;
     mnEditorFont: TMenuItem;
     toolbarImages: TImageList;
@@ -147,12 +153,14 @@ type
     procedure lmCopyTableClick(Sender: TObject);
     procedure lmCreateDBClick(Sender: TObject);
     procedure lmCreateDbTriggerClick(Sender: TObject);
+    procedure lmCreateDdlTriggerClick(Sender: TObject);
     procedure lmDBInfoClick(Sender: TObject);
     procedure lmDeActivateDbTriggerClick(Sender: TObject);
     procedure lmDisconnectClick(Sender: TObject);
     procedure lmDropDomainClick(Sender: TObject);
     procedure lmDropTriggerClick(Sender: TObject);
     procedure lmEditDbTriggerClick(Sender: TObject);
+    procedure lmEditDdlTriggerClick(Sender: TObject);
     procedure lmEditFieldClick(Sender: TObject);
     procedure lmGetIncrementGenClick(Sender: TObject);
     procedure lmImportTableClick(Sender: TObject);
@@ -195,6 +203,7 @@ type
     procedure lmTableManageClick(Sender: TObject);
     procedure lmUserPermManagementClick(Sender: TObject);
     procedure lmViewDbTriggerClick(Sender: TObject);
+    procedure lmViewDdlTriggerClick(Sender: TObject);
     procedure lmViewDomainClick(Sender: TObject);
     procedure lmDisplayViewClick(Sender: TObject);
     // Expand table field nodes
@@ -281,6 +290,7 @@ type
     function GetTableNames(dbIndex: Integer): string;
     function CreateNewTrigger(dbIndex: Integer; ATableName: string; OnCommitProcedure: TNotifyEvent = nil): Boolean;
     function CreateNewDbTrigger(dbIndex: Integer; OnCommitProcedure: TNotifyEvent = nil): Boolean;
+    function CreateNewDdlTrigger(dbIndex: Integer; OnCommitProcedure: TNotifyEvent = nil): Boolean;
     function AddToSQLHistory(DatabaseTitle: string; SQLType, SQLStatement: string): Boolean;
     function SaveAndCloseSQLHistory: Boolean;
     function OpenSQLHistory(DatabaseTitle: string): Boolean;
@@ -310,7 +320,8 @@ uses CreateDb, ViewView, ViewTrigger, ViewSProc, ViewGen, NewTable, NewGen,
   EnterPass, CreateTrigger, EditTable, CallProc, EditDataFullRec, UDFInfo,
   ViewDomain, NewDomain, SysTables, Scriptdb, UserPermissions, BackupRestore,
   UnitFirebirdServices, CreateUser, ChangePass, PermissionManage, CopyTable,
-  About, NewEditField, dbInfo, Comparison, CreateDbTrigger, ViewDbTrigger;
+  About, NewEditField, dbInfo, Comparison, CreateDbTrigger, ViewDbTrigger,
+  CreateDdlTrigger, ViewDdlTrigger;
 
 
 procedure TfmMain.mnExitClick(Sender: TObject);
@@ -515,6 +526,17 @@ begin
   CreateNewDbTrigger(DBIndex);
 end;
 
+procedure TfmMain.lmCreateDdlTriggerClick(Sender: TObject);
+var
+  SelNode: TTreeNode;
+  DBIndex: Integer;
+begin
+  SelNode:= tvMain.Selected;
+  DBIndex:= PtrInt(SelNode.Parent.Data);
+
+  CreateNewDdlTrigger(DBIndex);
+end;
+
 procedure TfmMain.lmDBInfoClick(Sender: TObject);
 var
   ATab: TTabSheet;
@@ -632,6 +654,25 @@ begin
   begin
     ATriggerName:= SelNode.Text;
     QWindow:= ShowQueryWindow(PtrInt(SelNode.Parent.Parent.Data), 'Edit DB Trigger ' + ATriggerName);
+
+    QWindow.meQuery.Lines.Clear;
+    dmSysTables.ScriptDbTrigger(PtrInt(SelNode.Parent.Parent.Data), ATriggerName, QWindow.meQuery.Lines);
+    QWindow.Show;
+  end;
+
+end;
+
+procedure TfmMain.lmEditDdlTriggerClick(Sender: TObject);
+var
+  SelNode: TTreeNode;
+  QWindow: TfmQueryWindow;
+  ATriggerName: string;
+begin
+  SelNode:= tvMain.Selected;
+  if (SelNode <> nil) and (SelNode.Parent <> nil) then
+  begin
+    ATriggerName:= SelNode.Text;
+    QWindow:= ShowQueryWindow(PtrInt(SelNode.Parent.Parent.Data), 'Edit DDL Trigger ' + ATriggerName);
 
     QWindow.meQuery.Lines.Clear;
     dmSysTables.ScriptDbTrigger(PtrInt(SelNode.Parent.Parent.Data), ATriggerName, QWindow.meQuery.Lines);
@@ -1055,7 +1096,6 @@ function TfmMain.CreateNewDbTrigger(dbIndex: Integer;
   OnCommitProcedure: TNotifyEvent): Boolean;
 var
   QWindow: TfmQueryWindow;
-  TrigType: string;
 begin
   Result:= False;
 
@@ -1080,6 +1120,45 @@ begin
       QWindow.OnCommit:= OnCommitProcedure;
   end;
   fmCreateDbTrigger.Free;
+end;
+
+function TfmMain.CreateNewDdlTrigger(dbIndex: Integer;
+  OnCommitProcedure: TNotifyEvent): Boolean;
+var
+  QWindow: TfmQueryWindow;
+  TrigType: string;
+begin
+  Result:= False;
+
+  fmCreateDdlTrigger := TfmCreateDdlTrigger.Create(Application);
+  if fmCreateDdlTrigger.ShowModal = mrOK then
+  begin
+    if fmCreateDdlTrigger.rbBefor.Checked then
+      TrigType := 'BEFORE '
+    else
+      TrigType := 'AFTER ';
+
+    TrigType := TrigType + fmCreateDdlTrigger.GetEvents;
+
+    Result:= True;
+    QWindow:= ShowQueryWindow(dbIndex, 'Create new DDL Trigger');
+
+    QWindow.meQuery.Lines.Clear;
+    QWindow.meQuery.Lines.Add('CREATE TRIGGER ' + fmCreateDdlTrigger.edTriggerName.Text);
+    QWindow.meQuery.Lines.Add('Active');
+    QWindow.meQuery.Lines.Add(TrigType);
+    QWindow.meQuery.Lines.Add('Position 0');
+    QWindow.meQuery.Lines.Add('AS');
+    QWindow.meQuery.Lines.Add('BEGIN');
+    QWindow.meQuery.Lines.Add(' -- Your code here');
+    QWindow.meQuery.Lines.Add('END;');
+    fmMain.Show;
+
+    if OnCommitProcedure <> nil then
+      QWindow.OnCommit:= OnCommitProcedure;
+  end;
+  fmCreateDdlTrigger.Free;
+
 end;
 
 (*******  Create Trigger click  ********)
@@ -2648,6 +2727,73 @@ begin
 
 end;
 
+procedure TfmMain.lmViewDdlTriggerClick(Sender: TObject);
+var
+  SelNode: TTreeNode;
+  ATriggerName: string;
+  Event: Int64;
+  TriggerEnabled: Boolean;
+  Body: string;
+  BeforeAfter: string;
+  EventStr: string;
+  TriggerPosition: Integer;
+  ATab: TTabSheet;
+  Title: string;
+  dbIndex: Integer;
+begin
+  SelNode:= tvMain.Selected;
+  if (SelNode <> nil) and (SelNode.Parent <> nil) then
+  begin
+    ATriggerName:= SelNode.Text;
+    Title:= SelNode.Parent.Parent.Text +  ': DDL Trigger : ' + ATriggerName;
+    dbIndex:= PtrInt(SelNode.Parent.Parent.Data);
+    dmSysTables.GetDdlTriggerInfo(dbIndex, ATriggerName, Event, Body,
+      TriggerEnabled, TriggerPosition);
+    dmSysTables.DecodeDDLEvent(Event, EventStr, BeforeAfter);
+
+    // Fill ViewTrigger form
+    fmViewDdlTrigger:= FindCustomForm(Title, TfmViewDdlTrigger) as TfmViewDdlTrigger;
+    if fmViewDdlTrigger = nil then
+    begin
+      fmViewDdlTrigger:= TfmViewDdlTrigger.Create(Application);
+      ATab:= TTabSheet.Create(self);
+      ATab.Parent:= PageControl1;
+      fmViewDdlTrigger.Parent:= ATab;
+      fmViewDdlTrigger.Left:= 0;
+      fmViewDdlTrigger.Top:= 0;
+      fmViewDdlTrigger.BorderStyle:= bsNone;
+      fmViewDdlTrigger.Align:= alClient;
+    end
+    else
+      ATab:= fmViewDdlTrigger.Parent as TTabSheet;
+
+    PageControl1.ActivePage:= ATab;
+    ATab.Tag:= dbIndex;
+    with fmViewDdlTrigger do
+    begin
+      Caption:= Title;
+      ATab.Caption:= Caption;
+      edName.Caption:= ATriggerName;
+      mEvent.Caption:= EventStr;
+      laType.Caption:= BeforeAfter;
+      laPos.Caption:= IntToStr(TriggerPosition);
+      seScript.Lines.Text:= Body;
+      if TriggerEnabled then
+      begin
+        laEnabled.Caption:= 'Yes';
+        laEnabled.Font.Color:= clGreen;
+      end
+      else
+      begin
+        laEnabled.Caption:= 'No';
+        laEnabled.Font.Color:= clRed;
+      end;
+    end;
+    fmViewDdlTrigger.Show;
+  end;
+
+end;
+
 (**********  View Domain info ************)
 
 procedure TfmMain.lmViewDomainClick(Sender: TObject);
@@ -4048,6 +4194,9 @@ begin
     if ParentNodeText = 'Database Triggers' then // Database Triggers
       Filter:= 32
     else
+    if ParentNodeText = 'DDL Triggers' then // DDL Triggers
+      Filter:= 34
+    else
     if ParentNodeText = 'Views' then // View
       Filter:= 4
     else
@@ -4092,6 +4241,9 @@ begin
     else
     if NodeText = 'Database Triggers' then // Database Triggers root
       Filter:= 31
+    else
+    if NodeText = 'DDL Triggers' then // DDL Triggers root
+      Filter:= 33
     else
     if NodeText = 'Domains' then // Domains root
       Filter:= 18
@@ -4181,6 +4333,7 @@ begin
           'Generators': lmViewGenClick(nil);
           'Triggers': lmViewTriggerClick(nil);
           'Database Triggers': lmViewDbTriggerClick(nil);
+          'DDL Triggers': lmViewDdlTriggerClick(nil);
           'Views': lmDisplay1000VClick(nil);
           'Stored Procedures': lmViewStoredProcedureClick(nil);
           'Functions': lmViewUDFClick(nil);

@@ -54,6 +54,10 @@ type
     function GetDbTriggerInfo(DatabaseIndex: Integer; ATriggername: string;
       var Event, Body: string; var TriggerEnabled: Boolean;
       var TriggerPosition: Integer): Boolean;
+    // Gets information on specified DDL trigger
+    function GetDdlTriggerInfo(DatabaseIndex: Integer; ATriggername: string;
+      var Event: Int64; var Body: string; var TriggerEnabled: Boolean;
+      var TriggerPosition: Integer): Boolean;
     // Scripts all check constraints for a database's tables as alter table
     // statement, adding the SQL to List
     function ScriptCheckConstraints(dbIndex: Integer; List: TStrings): boolean;
@@ -62,6 +66,9 @@ type
       AsCreate: Boolean = False): Boolean;
     // Script database trigger creation for specified database trigger
     function ScriptDbTrigger(dbIndex: Integer; ATriggerName: string; List: TStrings;
+      AsCreate: Boolean = False): Boolean;
+    // Script DDL trigger creation for specified database trigger
+    function ScriptDdlTrigger(dbIndex: Integer; ATriggerName: string; List: TStrings;
       AsCreate: Boolean = False): Boolean;
     // Used e.g. in scripting foreign keys
     function GetTableConstraints(ATableName: string; var SqlQuery: TSQLQuery;
@@ -131,7 +138,7 @@ type
     function GetConstraintsOfTable(ATableName: string; var SqlQuery: TSQLQuery;
       ConstraintsList: TStringList=nil): Boolean;
 
-    { public declarations }
+    class procedure DecodeDDLEvent(AEvent: Int64; var AName, AWhen: String);
   end; 
 
 var
@@ -431,6 +438,40 @@ begin
   end;
 end;
 
+function TdmSysTables.GetDdlTriggerInfo(DatabaseIndex: Integer;
+  ATriggername: string; var Event: Int64; var Body: string;
+  var TriggerEnabled: Boolean; var TriggerPosition: Integer): Boolean;
+begin
+  try
+    Init(DatabaseIndex);
+    sqQuery.Close;
+    sqQuery.SQL.Text:= 'SELECT RDB$TRIGGER_NAME AS trigger_name, ' +
+      '  RDB$TRIGGER_SOURCE AS trigger_body, ' +
+      '  RDB$TRIGGER_TYPE as Trigger_Type, ' +
+      '  RDB$Trigger_Sequence as TPos, ' +
+      '   CASE RDB$TRIGGER_INACTIVE ' +
+      '   WHEN 1 THEN 0 ELSE 1 ' +
+      ' END AS trigger_enabled, ' +
+      ' RDB$DESCRIPTION AS trigger_comment ' +
+      ' FROM RDB$TRIGGERS ' +
+      ' WHERE UPPER(TRIM(RDB$TRIGGER_NAME))=''' + UpperCase(ATriggerName) + ''' ';
+
+    sqQuery.Open;
+    Body:= Trim(sqQuery.FieldByName('Trigger_Body').AsString);
+    TriggerEnabled:= sqQuery.FieldByName('Trigger_Enabled').AsBoolean;
+    TriggerPosition:= sqQuery.FieldByName('TPos').AsInteger;
+    Event := sqQuery.FieldByName('Trigger_Type').AsLargeInt;
+    sqQuery.Close;
+    Result:= True;
+  except
+    on E: Exception do
+    begin
+      MessageDlg('Error: ' + e.Message, mtError, [mbOk], 0);
+      Result:= False;
+    end;
+  end;
+end;
+
 function TdmSysTables.ScriptCheckConstraints(dbIndex: Integer; List: TStrings
   ): boolean;
 const
@@ -536,6 +577,40 @@ begin
   end;
 end;
 
+function TdmSysTables.ScriptDdlTrigger(dbIndex: Integer; ATriggerName: string;
+  List: TStrings; AsCreate: Boolean): Boolean;
+var
+  Body: string;
+  Event: Int64;
+  When: String;
+  EventStr: String;
+  TriggerEnabled: Boolean;
+  TriggerPosition: Integer;
+begin
+  Result:= GetDdlTriggerInfo(dbIndex, ATriggerName, Event, Body, TriggerEnabled, TriggerPosition);
+  if Result then
+  begin
+    DecodeDDLEvent(Event, EventStr, When);
+    List.Add('SET TERM ^ ;');
+    if AsCreate then
+      List.Add('Create Trigger ' + ATriggerName)
+    else
+      List.Add('Alter Trigger ' + ATriggerName);
+      if TriggerEnabled then
+        List.Add('ACTIVE')
+      else
+        List.Add('INACTIVE');
+
+    if AsCreate then
+      List.Add(When + ' ' + EventStr);
+
+    List.Add('Position ' + IntToStr(TriggerPosition));
+
+    List.Text:= List.Text + Body + ' ^';
+    List.Add('SET TERM ; ^');
+  end;
+end;
+
 (**********  Get Table Constraints Info  ********************)
 
 function TdmSysTables.GetTableConstraints(ATableName: string; var SqlQuery: TSQLQuery;
@@ -618,6 +693,79 @@ begin
     First;
   end;
 
+end;
+
+class procedure TdmSysTables.DecodeDDLEvent(AEvent: Int64; var AName,
+  AWhen: String);
+const
+  DDLEVENTS: array of record
+    Code: Int64;
+    Name: String;
+  end = (
+  (Code: $0000000000004002; Name: 'CREATE TABLE'),
+  (Code: $0000000000004004; Name: 'ALTER TABLE'),
+  (Code: $0000000000004008; Name: 'DROP TABLE'),
+  (Code: $0000000000004010; Name: 'CREATE PROCEDURE'),
+  (Code: $0000000000004020; Name: 'ALTER PROCEDURE'),
+  (Code: $0000000000004040; Name: 'DROP PROCEDURE'),
+  (Code: $0000000000004080; Name: 'CREATE FUNCTION'),
+  (Code: $0000000000004100; Name: 'ALTER FUNCTION'),
+  (Code: $0000000000004200; Name: 'DROP FUNCTION'),
+  (Code: $0000000000004400; Name: 'CREATE TRIGGER'),
+  (Code: $0000000000004800; Name: 'ALTER TRIGGER'),
+  (Code: $0000000000005000; Name: 'DROP TRIGGER'),
+  (Code: $0000000000014000; Name: 'CREATE EXCEPTION'),
+  (Code: $0000000000024000; Name: 'ALTER EXCEPTION'),
+  (Code: $0000000000044000; Name: 'DROP EXCEPTION'),
+  (Code: $0000000000084000; Name: 'CREATE VIEW'),
+  (Code: $0000000000104000; Name: 'ALTER VIEW'),
+  (Code: $0000000000204000; Name: 'DROP VIEW'),
+  (Code: $0000000000404000; Name: 'CREATE DOMAIN'),
+  (Code: $0000000000804000; Name: 'ALTER DOMAIN'),
+  (Code: $0000000001004000; Name: 'DROP DOMAIN'),
+  (Code: $0000000002004000; Name: 'CREATE ROLE'),
+  (Code: $0000000004004000; Name: 'ALTER ROLE'),
+  (Code: $0000000008004000; Name: 'DROP ROLE'),
+  (Code: $0000000010004000; Name: 'CREATE INDEX'),
+  (Code: $0000000020004000; Name: 'ALTER INDEX'),
+  (Code: $0000000040004000; Name: 'DROP INDEX'),
+  (Code: $0000000080004000; Name: 'CREATE SEQUENCE'),
+  (Code: $0000000100004000; Name: 'ALTER SEQUENCE'),
+  (Code: $0000000200004000; Name: 'DROP SEQUENCE'),
+  (Code: $0000000400004000; Name: 'CREATE USER'),
+  (Code: $0000000800004000; Name: 'ALTER USER'),
+  (Code: $0000001000004000; Name: 'DROP USER'),
+  (Code: $0000002000004000; Name: 'CREATE COLLATION'),
+  (Code: $0000004000004000; Name: 'DROP COLLATION'),
+  (Code: $0000008000004000; Name: 'ALTER CHARACTER SET'),
+  (Code: $0000010000004000; Name: 'CREATE PACKAGE'),
+  (Code: $0000020000004000; Name: 'ALTER PACKAGE'),
+  (Code: $0000040000004000; Name: 'DROP PACKAGE'),
+  (Code: $0000080000004000; Name: 'CREATE PACKAGE BODY'),
+  (Code: $0000100000004000; Name: 'DROP PACKAGE BODY'),
+  (Code: $0000200000004000; Name: 'CREATE MAPPING'),
+  (Code: $0000400000004000; Name: 'ALTER MAPPING'),
+  (Code: $0000800000004000; Name: 'DROP MAPPING'));
+  ANYDDLCODE = $7FFFFFFFFFFFDFFE;
+  ANYDDLNAME = 'ANY DDL STATEMENT';
+var
+  I: Integer;
+begin
+  AName := '';
+  if AEvent and 1 = 0 then
+    AWhen := 'Before'
+  else
+    AWhen := 'After';
+  if AEvent = ANYDDLCODE then
+    AName := ANYDDLNAME
+  else
+    for I := 0 to Length(DDLEVENTS) - 1 do
+      if AEvent and DDLEVENTS[I].Code = DDLEVENTS[I].Code then
+      begin
+        if AName <> '' then
+          AName := AName + ' OR ';
+        AName := AName + DDLEVENTS[I].Name;
+      end;
 end;
 
 function TdmSysTables.GetAllConstraints(dbIndex: Integer; ConstraintsList, TablesList: TStringList): Boolean;
