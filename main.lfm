@@ -3033,6 +3033,11 @@ object fmMain: TfmMain
       Caption = 'Get increment SQL'
       OnClick = lmGetIncrementGenClick
     end
+    object lmDropGenerator: TMenuItem
+      Tag = 2
+      Caption = 'Drop Generator'
+      OnClick = lmDropGeneratorClick
+    end
     object lmDisplay1000V: TMenuItem
       Tag = 4
       Caption = 'View First 1000 records'
@@ -3053,6 +3058,11 @@ object fmMain: TfmMain
       Caption = 'Edit View'
       OnClick = lmEditViewClick
     end
+    object lmDropView: TMenuItem
+      Tag = 4
+      Caption = 'Drop View'
+      OnClick = lmDropViewClick
+    end
     object lmCreateStoredProc: TMenuItem
       Tag = 15
       Caption = 'Create New Stored Procedure'
@@ -3072,6 +3082,11 @@ object fmMain: TfmMain
       Tag = 5
       Caption = 'Edit Stored Procedure'
       OnClick = lmEditProcClick
+    end
+    object lmDropProc: TMenuItem
+      Tag = 5
+      Caption = 'Drop Stored Procedure'
+      OnClick = lmDropProcClick
     end
     object lmViewTrigger: TMenuItem
       Tag = 3

@@ -47,6 +47,9 @@ type
     lmDeActivateDdlTrigger: TMenuItem;
     lmDropDdlTrigger: TMenuItem;
     lmDropUDF: TMenuItem;
+    lmDropView: TMenuItem;
+    lmDropGenerator: TMenuItem;
+    lmDropProc: TMenuItem;
     mnOptions: TMenuItem;
     mnEditorFont: TMenuItem;
     toolbarImages: TImageList;
@@ -159,8 +162,11 @@ type
     procedure lmDeActivateDbTriggerClick(Sender: TObject);
     procedure lmDisconnectClick(Sender: TObject);
     procedure lmDropDomainClick(Sender: TObject);
+    procedure lmDropGeneratorClick(Sender: TObject);
+    procedure lmDropProcClick(Sender: TObject);
     procedure lmDropTriggerClick(Sender: TObject);
     procedure lmDropUDFClick(Sender: TObject);
+    procedure lmDropViewClick(Sender: TObject);
     procedure lmEditDbTriggerClick(Sender: TObject);
     procedure lmEditDdlTriggerClick(Sender: TObject);
     procedure lmEditFieldClick(Sender: TObject);
@@ -608,7 +614,6 @@ end;
 procedure TfmMain.lmDropDomainClick(Sender: TObject);
 var
   SelNode: TTreeNode;
-  ADomainName: string;
   QWindow: TfmQueryWindow;
 begin
   SelNode:= tvMain.Selected;
@@ -621,6 +626,44 @@ begin
     QWindow:= ShowQueryWindow(PtrInt(SelNode.Parent.Parent.Data), 'Drop Domain');
     QWindow.meQuery.Lines.Clear;
     QWindow.meQuery.Lines.Add('DROP DOMAIN ' + SelNode.Text + ';');
+    QWindow.Show;
+  end;
+end;
+
+procedure TfmMain.lmDropGeneratorClick(Sender: TObject);
+var
+  SelNode: TTreeNode;
+  QWindow: TfmQueryWindow;
+begin
+  SelNode:= tvMain.Selected;
+  if MessageDlg('Are you sure you want to delete ' + SelNode.Text + ' permanently', mtConfirmation,
+    [mbYes, mbNo], 0) = mrYes then
+  begin
+    // Move selection to tables above so object is not in use when deleting it
+    SelNode.Collapse(true);
+    SelNode.Parent.Selected:=true;
+    QWindow:= ShowQueryWindow(PtrInt(SelNode.Parent.Parent.Data), 'Drop Generator');
+    QWindow.meQuery.Lines.Clear;
+    QWindow.meQuery.Lines.Add('DROP GENERATOR "' + SelNode.Text + '";');
+    QWindow.Show;
+  end;
+end;
+
+procedure TfmMain.lmDropProcClick(Sender: TObject);
+var
+  SelNode: TTreeNode;
+  QWindow: TfmQueryWindow;
+begin
+  SelNode:= tvMain.Selected;
+  if MessageDlg('Are you sure you want to delete ' + SelNode.Text + ' permanently', mtConfirmation,
+    [mbYes, mbNo], 0) = mrYes then
+  begin
+    // Move selection to tables above so object is not in use when deleting it
+    SelNode.Collapse(true);
+    SelNode.Parent.Selected:=true;
+    QWindow:= ShowQueryWindow(PtrInt(SelNode.Parent.Parent.Data), 'Drop Stored Procedure');
+    QWindow.meQuery.Lines.Clear;
+    QWindow.meQuery.Lines.Add('DROP PROCEDURE "' + SelNode.Text + '";');
     QWindow.Show;
   end;
 end;
@@ -656,9 +699,28 @@ begin
     // Move selection to tables above so object is not in use when deleting it
     SelNode.Collapse(true);
     SelNode.Parent.Selected:=true;
-    QWindow:= ShowQueryWindow(PtrInt(SelNode.Parent.Parent.Data), 'Drop Trigger');
+    QWindow:= ShowQueryWindow(PtrInt(SelNode.Parent.Parent.Data), 'Drop UDF');
     QWindow.meQuery.Lines.Clear;
     QWindow.meQuery.Lines.Add('DROP EXTERNAL FUNCTION "' + SelNode.Text + '";');
+    QWindow.Show;
+  end;
+end;
+
+procedure TfmMain.lmDropViewClick(Sender: TObject);
+var
+  SelNode: TTreeNode;
+  QWindow: TfmQueryWindow;
+begin
+  SelNode:= tvMain.Selected;
+  if MessageDlg('Are you sure you want to delete ' + SelNode.Text + ' permanently', mtConfirmation,
+    [mbYes, mbNo], 0) = mrYes then
+  begin
+    // Move selection to tables above so object is not in use when deleting it
+    SelNode.Collapse(true);
+    SelNode.Parent.Selected:=true;
+    QWindow:= ShowQueryWindow(PtrInt(SelNode.Parent.Parent.Data), 'Drop View');
+    QWindow.meQuery.Lines.Clear;
+    QWindow.meQuery.Lines.Add('DROP VIEW "' + SelNode.Text + '";');
     QWindow.Show;
   end;
 end;
