@@ -225,7 +225,7 @@ begin
       'order by RDB$RELATION_NAME'
   else
   if ObjectType = otDomains then // Domains, excluding system-defined domains
-    sqQuery.SQL.Text:= 'select RDB$FIELD_NAME from RDB$FIELDS where RDB$Field_Name not like ''RDB$%''  order by rdb$Field_Name'
+    sqQuery.SQL.Text:= 'select RDB$FIELD_NAME from RDB$FIELDS where RDB$Field_Name not like ''RDB$%'' and RDB$Field_Name not like ''MON$%'' and RDB$Field_Name not like ''SEC$%''  order by rdb$Field_Name'
   else
   if ObjectType = otRoles then // Roles
     sqQuery.SQL.Text:= 'select RDB$ROLE_NAME from RDB$ROLES order by rdb$Role_Name'
