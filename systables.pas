@@ -421,11 +421,11 @@ begin
     TriggerEnabled:= sqQuery.FieldByName('Trigger_Enabled').AsBoolean;
     TriggerPosition:= sqQuery.FieldByName('TPos').AsInteger;
     case sqQuery.FieldByName('Trigger_Type').AsInteger of
-      8192: Event := 'ON CONNECT';
-      8193: Event := 'ON DISCONNECT';
-      8194: Event := 'ON TRANSACTION START';
-      8195: Event := 'ON TRANSACTION COMMIT';
-      8196: Event := 'ON TRANSACTION ROLLBACK';
+      8192: Event := 'CONNECT';
+      8193: Event := 'DISCONNECT';
+      8194: Event := 'TRANSACTION START';
+      8195: Event := 'TRANSACTION COMMIT';
+      8196: Event := 'TRANSACTION ROLLBACK';
     end;
     sqQuery.Close;
     Result:= True;
