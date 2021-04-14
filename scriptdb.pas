@@ -232,9 +232,12 @@ begin
       List[i]:= List[i] + '(' + IntToStr(DomainSize) + ')';
       if CharacterSet <> '' then
         List[i]:= List[i] + ' CHARACTER SET ' + CharacterSet;
+      if DefaultValue <> '' then
+        DefaultValue := '"' + DefaultValue + '"';
     end;
 
-    List[i]:= List[i] + ' DEFAULT ' + DefaultValue;
+    if DefaultValue <> '' then
+      List[i]:= List[i] + ' DEFAULT ' + DefaultValue;
 
     if NotNull then
       List[i]:= List[i] + ' NOT NULL';
