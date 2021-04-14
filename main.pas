@@ -2206,6 +2206,17 @@ begin
         ScriptAllTriggers(dbIndex, List);
         Lines.AddStrings(List);
 
+        Lines.Add('');
+        Lines.Add('--      Database Triggers');
+        Lines.Add('');
+        ScriptAllDbTriggers(dbIndex, List);
+        Lines.AddStrings(List);
+
+        Lines.Add('');
+        Lines.Add('--      DDL Triggers');
+        Lines.Add('');
+        ScriptAllDdlTriggers(dbIndex, List);
+        Lines.AddStrings(List);
 
         Lines.Add('');
         Lines.Add('--      Secondary Indices');

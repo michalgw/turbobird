@@ -30,6 +30,8 @@ function ScriptAllProcedureTemplates(dbIndex: Integer; var List: TStringList): B
 // Scripts all views in a database
 function ScriptAllViews(dbIndex: Integer; var List: TStringList): Boolean;
 function ScriptAllTriggers(dbIndex: Integer; var List: TStringList): Boolean;
+function ScriptAllDbTriggers(dbIndex: Integer; var List: TStringList): Boolean;
+function ScriptAllDdlTriggers(dbIndex: Integer; var List: TStringList): Boolean;
 // Scripts all non-primary key indexes for a database
 function ScriptAllSecIndices(dbIndex: Integer; var List: TStringList): Boolean;
 
@@ -512,6 +514,58 @@ begin
 end;
 
 (********************  Script Secondary indices  ***********************)
+
+function ScriptAllDbTriggers(dbIndex: Integer; var List: TStringList): Boolean;
+var
+  Count: Integer;
+  i: Integer;
+  TriggersList: TStringList;
+  TriggerScript: TStringList;
+begin
+  TriggersList:= TStringList.Create;
+  TriggerScript:= TStringList.Create;
+  try
+    TriggersList.CommaText:= dmSysTables.GetDBObjectNames(dbIndex, otDbTriggers, Count);
+    List.Clear;
+    for i:= 0 to TriggersList.Count - 1 do
+    begin
+      TriggerScript.Clear;
+      dmSysTables.ScriptDbTrigger(dbIndex, TriggersList[i], TriggerScript, True);
+      List.AddStrings(TriggerScript);
+      List.Add('');
+    end;
+    Result:= TriggersList.Count > 0;
+  finally
+    TriggerScript.Free;
+    TriggersList.Free;
+  end;
+end;
+
+function ScriptAllDdlTriggers(dbIndex: Integer; var List: TStringList): Boolean;
+var
+  Count: Integer;
+  i: Integer;
+  TriggersList: TStringList;
+  TriggerScript: TStringList;
+begin
+  TriggersList:= TStringList.Create;
+  TriggerScript:= TStringList.Create;
+  try
+    TriggersList.CommaText:= dmSysTables.GetDBObjectNames(dbIndex, otDDLTriggers, Count);
+    List.Clear;
+    for i:= 0 to TriggersList.Count - 1 do
+    begin
+      TriggerScript.Clear;
+      dmSysTables.ScriptDdlTrigger(dbIndex, TriggersList[i], TriggerScript, True);
+      List.AddStrings(TriggerScript);
+      List.Add('');
+    end;
+    Result:= TriggersList.Count > 0;
+  finally
+    TriggerScript.Free;
+    TriggersList.Free;
+  end;
+end;
 
 function ScriptAllSecIndices(dbIndex: Integer; var List: TStringList): Boolean;
 var

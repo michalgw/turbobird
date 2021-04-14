@@ -461,6 +461,7 @@
         <Filename Value="viewddltrigger.pas"/>
         <IsPartOfProject Value="True"/>
         <ComponentName Value="fmViewDdlTrigger"/>
+        <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="ViewDdlTrigger"/>
       </Unit48>
